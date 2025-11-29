@@ -20,9 +20,9 @@ const createTransporter = () => {
       user: process.env.SMTP_USER,
       pass: process.env.SMTP_PASS,
     },
-    connectionTimeout: 10000, // 10 secondi timeout per connessione
-    greetingTimeout: 5000, // 5 secondi timeout per greeting
-    socketTimeout: 10000, // 10 secondi timeout per socket
+    connectionTimeout: 5000, // 5 secondi timeout per connessione
+    greetingTimeout: 3000, // 3 secondi timeout per greeting
+    socketTimeout: 5000, // 5 secondi timeout per socket
     tls: {
       rejectUnauthorized: process.env.NODE_ENV === 'production'
     },
@@ -31,10 +31,15 @@ const createTransporter = () => {
     maxMessages: 100
   });
 
-  // Verify transporter configuration in modo non-bloccante
+  // Verify transporter configuration in modo non-bloccante con timeout
   // Non blocca l'avvio del server se SMTP non è raggiungibile
   setImmediate(() => {
+    const verifyTimeout = setTimeout(() => {
+      logger.warn('⚠️  Timeout verifica SMTP. Il server continuerà senza supporto email.');
+    }, 3000);
+
     transporter.verify((error, success) => {
+      clearTimeout(verifyTimeout);
       if (error) {
         logger.error('❌ Errore configurazione email:', error.message);
         logger.warn('⚠️  Il server continuerà senza supporto email. Controlla SMTP_HOST e porta firewall.');

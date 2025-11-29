@@ -104,17 +104,42 @@ export const addToCart = async (req, res) => {
     let result;
 
     if (req.user) {
-      // For authenticated users
-      result = await client.query(
-        `INSERT INTO cart (user_id, product_id, quantity)
-         VALUES ($1, $2, $3)
-         ON CONFLICT (user_id, product_id)
-         DO UPDATE SET quantity = cart.quantity + $3, updated_at = CURRENT_TIMESTAMP
-         RETURNING *`,
-        [req.user.id, product_id, quantity]
-      );
+      // For authenticated users - try ON CONFLICT first, fallback if index doesn't exist
+      try {
+        result = await client.query(
+          `INSERT INTO cart (user_id, product_id, quantity)
+           VALUES ($1, $2, $3)
+           ON CONFLICT (user_id, product_id)
+           DO UPDATE SET quantity = cart.quantity + $3, updated_at = CURRENT_TIMESTAMP
+           RETURNING *`,
+          [req.user.id, product_id, quantity]
+        );
+      } catch (conflictError) {
+        if (conflictError.code === '42P10') {
+          // No matching constraint - use manual upsert
+          const existing = await client.query(
+            'SELECT id, quantity FROM cart WHERE user_id = $1 AND product_id = $2',
+            [req.user.id, product_id]
+          );
+
+          if (existing.rows.length > 0) {
+            result = await client.query(
+              `UPDATE cart SET quantity = quantity + $1, updated_at = CURRENT_TIMESTAMP
+               WHERE user_id = $2 AND product_id = $3 RETURNING *`,
+              [quantity, req.user.id, product_id]
+            );
+          } else {
+            result = await client.query(
+              'INSERT INTO cart (user_id, product_id, quantity) VALUES ($1, $2, $3) RETURNING *',
+              [req.user.id, product_id, quantity]
+            );
+          }
+        } else {
+          throw conflictError;
+        }
+      }
     } else {
-      // For guest users
+      // For guest users - try ON CONFLICT first, fallback if index doesn't exist
       let sessionId = req.cookies.cart_session_id || uuidv4();
 
       if (!req.cookies.cart_session_id) {
@@ -126,14 +151,39 @@ export const addToCart = async (req, res) => {
         });
       }
 
-      result = await client.query(
-        `INSERT INTO cart (session_id, product_id, quantity)
-         VALUES ($1, $2, $3)
-         ON CONFLICT (session_id, product_id)
-         DO UPDATE SET quantity = cart.quantity + $3, updated_at = CURRENT_TIMESTAMP
-         RETURNING *`,
-        [sessionId, product_id, quantity]
-      );
+      try {
+        result = await client.query(
+          `INSERT INTO cart (session_id, product_id, quantity)
+           VALUES ($1, $2, $3)
+           ON CONFLICT (session_id, product_id)
+           DO UPDATE SET quantity = cart.quantity + $3, updated_at = CURRENT_TIMESTAMP
+           RETURNING *`,
+          [sessionId, product_id, quantity]
+        );
+      } catch (conflictError) {
+        if (conflictError.code === '42P10') {
+          // No matching constraint - use manual upsert
+          const existing = await client.query(
+            'SELECT id, quantity FROM cart WHERE session_id = $1 AND product_id = $2',
+            [sessionId, product_id]
+          );
+
+          if (existing.rows.length > 0) {
+            result = await client.query(
+              `UPDATE cart SET quantity = quantity + $1, updated_at = CURRENT_TIMESTAMP
+               WHERE session_id = $2 AND product_id = $3 RETURNING *`,
+              [quantity, sessionId, product_id]
+            );
+          } else {
+            result = await client.query(
+              'INSERT INTO cart (session_id, product_id, quantity) VALUES ($1, $2, $3) RETURNING *',
+              [sessionId, product_id, quantity]
+            );
+          }
+        } else {
+          throw conflictError;
+        }
+      }
     }
 
     await client.query('COMMIT');
