@@ -11,6 +11,7 @@ import authRoutes from './routes/auth.js';
 import productRoutes from './routes/products.js';
 import cartRoutes from './routes/cart.js';
 import orderRoutes from './routes/orders.js';
+import testRoutes from './routes/test.js';
 import { pool } from './config/database.js';
 import logger from './utils/logger.js';
 
@@ -67,6 +68,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);
+app.use('/api', testRoutes); // Test endpoints
 
 // Health check endpoint
 app.get('/api/health', async (req, res) => {
