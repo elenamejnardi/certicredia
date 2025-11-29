@@ -257,7 +257,7 @@ export const sendOrderConfirmation = async (orderData) => {
 
   const { order, items, user } = orderData;
 
-  const htmlContent = \`
+  const htmlContent = `
     <!DOCTYPE html>
     <html>
     <head>
@@ -279,32 +279,32 @@ export const sendOrderConfirmation = async (orderData) => {
         </div>
         <div class="content">
           <h2 style="color: #0891b2;">Grazie per il tuo ordine!</h2>
-          <p>Ciao <strong>\${user.name}</strong>,</p>
+          <p>Ciao <strong>${user.name}</strong>,</p>
           <p>Abbiamo ricevuto il tuo ordine e lo stiamo processando.</p>
-          
+
           <div style="background: white; padding: 15px; border-radius: 5px; margin: 20px 0;">
-            <p style="margin: 0;"><strong>Numero Ordine:</strong> \${order.order_number}</p>
-            <p style="margin: 5px 0 0 0;"><strong>Data:</strong> \${new Date(order.created_at).toLocaleString('it-IT')}</p>
+            <p style="margin: 0;"><strong>Numero Ordine:</strong> ${order.order_number}</p>
+            <p style="margin: 5px 0 0 0;"><strong>Data:</strong> ${new Date(order.created_at).toLocaleString('it-IT')}</p>
           </div>
 
           <h3 style="color: #0891b2;">Dettagli Ordine</h3>
-          \${items.map(item => \`
+          ${items.map(item => `
             <div class="order-item">
-              <strong>\${item.product_name}</strong><br>
-              <small>Quantità: \${item.quantity} × €\${parseFloat(item.unit_price).toFixed(2)}</small><br>
-              <strong>€\${parseFloat(item.total_price).toFixed(2)}</strong>
+              <strong>${item.product_name}</strong><br>
+              <small>Quantità: ${item.quantity} × €${parseFloat(item.unit_price).toFixed(2)}</small><br>
+              <strong>€${parseFloat(item.total_price).toFixed(2)}</strong>
             </div>
-          \`).join('')}
+          `).join('')}
 
           <div class="total">
             <div style="display: flex; justify-content: space-between; font-size: 24px;">
               <strong>Totale:</strong>
-              <strong>€\${parseFloat(order.total_amount).toFixed(2)}</strong>
+              <strong>€${parseFloat(order.total_amount).toFixed(2)}</strong>
             </div>
           </div>
 
           <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin-top: 20px; border-radius: 5px;">
-            <strong>🏦 Metodo di Pagamento:</strong> \${order.payment_method === 'bank_transfer' ? 'Bonifico Bancario' : order.payment_method}<br>
+            <strong>🏦 Metodo di Pagamento:</strong> ${order.payment_method === 'bank_transfer' ? 'Bonifico Bancario' : order.payment_method}<br>
             <small>Riceverai le istruzioni per il pagamento via email separata.</small>
           </div>
 
@@ -316,16 +316,16 @@ export const sendOrderConfirmation = async (orderData) => {
       </div>
     </body>
     </html>
-  \`;
+  `;
 
   try {
     const info = await transporter.sendMail({
-      from: \`"CertiCredia Italia" <\${process.env.SMTP_USER}>\`,
+      from: `"CertiCredia Italia" <${process.env.SMTP_USER}>`,
       to: user.email,
-      subject: \`Conferma Ordine \${order.order_number} - CertiCredia\`,
+      subject: `Conferma Ordine ${order.order_number} - CertiCredia`,
       html: htmlContent,
     });
-    logger.info(\`✅ Email conferma ordine inviata a: \${user.email}\`);
+    logger.info(`✅ Email conferma ordine inviata a: ${user.email}`);
     return { success: true, messageId: info.messageId };
   } catch (error) {
     logger.error('❌ Errore invio email conferma ordine:', error);
@@ -343,7 +343,7 @@ export const sendOrderNotificationToAdmin = async (orderData) => {
 
   const { order, items, user } = orderData;
 
-  const htmlContent = \`
+  const htmlContent = `
     <!DOCTYPE html>
     <html>
     <head>
@@ -362,36 +362,36 @@ export const sendOrderNotificationToAdmin = async (orderData) => {
         </div>
         <div class="content">
           <div class="info-box">
-            <strong>Numero Ordine:</strong> \${order.order_number}<br>
-            <strong>Cliente:</strong> \${user.name} (\${user.email})<br>
-            <strong>Totale:</strong> €\${parseFloat(order.total_amount).toFixed(2)}<br>
-            <strong>Metodo Pagamento:</strong> \${order.payment_method}
+            <strong>Numero Ordine:</strong> ${order.order_number}<br>
+            <strong>Cliente:</strong> ${user.name} (${user.email})<br>
+            <strong>Totale:</strong> €${parseFloat(order.total_amount).toFixed(2)}<br>
+            <strong>Metodo Pagamento:</strong> ${order.payment_method}
           </div>
 
           <h3>Prodotti</h3>
-          \${items.map(item => \`<div class="info-box">\${item.product_name} x\${item.quantity} = €\${parseFloat(item.total_price).toFixed(2)}</div>\`).join('')}
+          ${items.map(item => `<div class="info-box">${item.product_name} x${item.quantity} = €${parseFloat(item.total_price).toFixed(2)}</div>`).join('')}
 
           <div class="info-box">
             <strong>Indirizzo:</strong><br>
-            \${order.billing_name}<br>
-            \${order.billing_address}<br>
-            \${order.billing_city} \${order.billing_postal_code}<br>
-            Tel: \${order.billing_phone}
+            ${order.billing_name}<br>
+            ${order.billing_address}<br>
+            ${order.billing_city} ${order.billing_postal_code}<br>
+            Tel: ${order.billing_phone}
           </div>
         </div>
       </div>
     </body>
     </html>
-  \`;
+  `;
 
   try {
     const info = await transporter.sendMail({
-      from: \`"CertiCredia Platform" <\${process.env.SMTP_USER}>\`,
+      from: `"CertiCredia Platform" <${process.env.SMTP_USER}>`,
       to: process.env.NOTIFICATION_EMAIL || 'request@certicredia.org',
-      subject: \`Nuovo Ordine \${order.order_number}\`,
+      subject: `Nuovo Ordine ${order.order_number}`,
       html: htmlContent,
     });
-    logger.info(\`✅ Notifica ordine inviata agli admin\`);
+    logger.info(`✅ Notifica ordine inviata agli admin`);
     return { success: true, messageId: info.messageId };
   } catch (error) {
     logger.error('❌ Errore invio notifica ordine:', error);
