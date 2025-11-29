@@ -1,4 +1,5 @@
 import { pool } from '../config/database.js';
+import { sendOrderConfirmation, sendOrderNotificationToAdmin } from '../config/email.js';
 import logger from '../utils/logger.js';
 import { v4 as uuidv4 } from 'uuid';
 import Stripe from 'stripe';
@@ -114,7 +115,16 @@ export const createOrder = async (req, res) => {
 
     await client.query('COMMIT');
 
-    logger.info(`✅ Ordine creato: ${orderNumber} per ${req.user.email}`);
+    await client.query('COMMIT');
+
+    logger.info(\`✅ Ordine creato: \${orderNumber} per \${req.user.email}\`);
+
+    // Send email notifications (non-blocking)
+    const emailData = { order, items: cartResult.rows, user: req.user };
+    Promise.all([
+      sendOrderConfirmation(emailData).catch(err => logger.error('Email conferma fallita:', err)),
+      sendOrderNotificationToAdmin(emailData).catch(err => logger.error('Email notifica admin fallita:', err))
+    ]);
 
     res.status(201).json({
       success: true,

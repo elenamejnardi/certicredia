@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop Certificazioni | CertiCredia Italia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-slate-900 text-white">
+    <!-- Navbar (same as index.html) -->
+    <nav id="navbar" class="fixed w-full z-50 bg-slate-900/95 backdrop-blur-md border-b border-slate-800 py-4">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
+            <a href="/" class="flex items-center space-x-2">
+                <svg class="w-8 h-8 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                </svg>
+                <span class="text-xl font-bold">CERTI<span class="text-cyan-400">CREDIA</span></span>
+            </a>
+            
+            <div class="flex items-center gap-4">
+                <a href="/" class="text-slate-300 hover:text-white">Home</a>
+                <a href="/shop.html" class="text-cyan-400">Shop</a>
+                <a href="/cart.html" class="relative">
+                    <svg class="w-6 h-6 text-slate-300 hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                    </svg>
+                    <span id="cart-badge" class="hidden absolute -top-2 -right-2 bg-cyan-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center"></span>
+                </a>
+                <div id="auth-buttons"></div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="pt-24 pb-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Header -->
+            <div class="mb-12">
+                <h1 class="text-4xl font-bold mb-4">Certificazioni Cybersecurity</h1>
+                <p class="text-slate-400 text-lg">Scegli la certificazione più adatta alle tue esigenze</p>
+            </div>
+
+            <!-- Products Grid -->
+            <div id="products-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Products loaded dynamically -->
+            </div>
+
+            <!-- Loading State -->
+            <div id="loading" class="text-center py-16">
+                <div class="animate-spin rounded-full h-16 w-16 border-b-2 border-cyan-500 mx-auto"></div>
+                <p class="text-slate-400 mt-4">Caricamento prodotti...</p>
+            </div>
+
+            <!-- Empty State -->
+            <div id="empty-state" class="hidden text-center py-16">
+                <svg class="w-24 h-24 text-slate-700 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
+                </svg>
+                <p class="text-slate-400 text-lg">Nessun prodotto disponibile</p>
+            </div>
+        </div>
+    </main>
+
+    <script src="shop.js"></script>
+</body>
+</html>

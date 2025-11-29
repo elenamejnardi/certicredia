@@ -246,3 +246,155 @@ const sendAutoResponse = async (data) => {
 };
 
 export { transporter, sendContactNotification, sendAutoResponse };
+
+/**
+ * Send order confirmation email to customer
+ */
+export const sendOrderConfirmation = async (orderData) => {
+  if (!transporter) {
+    return { success: false, message: 'Email transporter non configurato', simulated: true };
+  }
+
+  const { order, items, user } = orderData;
+
+  const htmlContent = \`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+        .content { background: #f8fafc; padding: 30px; }
+        .order-item { background: white; padding: 15px; margin-bottom: 10px; border-left: 4px solid #0891b2; border-radius: 5px; }
+        .total { background: #0891b2; color: white; padding: 20px; border-radius: 5px; margin-top: 20px; }
+        .footer { background: #1e293b; color: white; padding: 20px; text-align: center; border-radius: 0 0 10px 10px; font-size: 12px; }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <h1 style="margin: 0;">🛡️ CertiCredia Italia</h1>
+          <p style="margin: 10px 0 0 0;">Conferma Ordine</p>
+        </div>
+        <div class="content">
+          <h2 style="color: #0891b2;">Grazie per il tuo ordine!</h2>
+          <p>Ciao <strong>\${user.name}</strong>,</p>
+          <p>Abbiamo ricevuto il tuo ordine e lo stiamo processando.</p>
+          
+          <div style="background: white; padding: 15px; border-radius: 5px; margin: 20px 0;">
+            <p style="margin: 0;"><strong>Numero Ordine:</strong> \${order.order_number}</p>
+            <p style="margin: 5px 0 0 0;"><strong>Data:</strong> \${new Date(order.created_at).toLocaleString('it-IT')}</p>
+          </div>
+
+          <h3 style="color: #0891b2;">Dettagli Ordine</h3>
+          \${items.map(item => \`
+            <div class="order-item">
+              <strong>\${item.product_name}</strong><br>
+              <small>Quantità: \${item.quantity} × €\${parseFloat(item.unit_price).toFixed(2)}</small><br>
+              <strong>€\${parseFloat(item.total_price).toFixed(2)}</strong>
+            </div>
+          \`).join('')}
+
+          <div class="total">
+            <div style="display: flex; justify-content: space-between; font-size: 24px;">
+              <strong>Totale:</strong>
+              <strong>€\${parseFloat(order.total_amount).toFixed(2)}</strong>
+            </div>
+          </div>
+
+          <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin-top: 20px; border-radius: 5px;">
+            <strong>🏦 Metodo di Pagamento:</strong> \${order.payment_method === 'bank_transfer' ? 'Bonifico Bancario' : order.payment_method}<br>
+            <small>Riceverai le istruzioni per il pagamento via email separata.</small>
+          </div>
+
+          <p style="margin-top: 30px;">Per qualsiasi domanda, contattaci a <a href="mailto:request@certicredia.org">request@certicredia.org</a></p>
+        </div>
+        <div class="footer">
+          <p>© 2025 CertiCredia Italia S.r.l. - Certificazioni Cybersecurity</p>
+        </div>
+      </div>
+    </body>
+    </html>
+  \`;
+
+  try {
+    const info = await transporter.sendMail({
+      from: \`"CertiCredia Italia" <\${process.env.SMTP_USER}>\`,
+      to: user.email,
+      subject: \`Conferma Ordine \${order.order_number} - CertiCredia\`,
+      html: htmlContent,
+    });
+    logger.info(\`✅ Email conferma ordine inviata a: \${user.email}\`);
+    return { success: true, messageId: info.messageId };
+  } catch (error) {
+    logger.error('❌ Errore invio email conferma ordine:', error);
+    return { success: false, error: error.message };
+  }
+};
+
+/**
+ * Send order notification to admin
+ */
+export const sendOrderNotificationToAdmin = async (orderData) => {
+  if (!transporter) {
+    return { success: false, simulated: true };
+  }
+
+  const { order, items, user } = orderData;
+
+  const htmlContent = \`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: #1e293b; color: white; padding: 20px; border-radius: 10px 10px 0 0; }
+        .content { background: #f8fafc; padding: 20px; }
+        .info-box { background: white; padding: 15px; border-left: 4px solid #0891b2; margin-bottom: 15px; border-radius: 5px; }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <h1>🆕 Nuovo Ordine Ricevuto</h1>
+        </div>
+        <div class="content">
+          <div class="info-box">
+            <strong>Numero Ordine:</strong> \${order.order_number}<br>
+            <strong>Cliente:</strong> \${user.name} (\${user.email})<br>
+            <strong>Totale:</strong> €\${parseFloat(order.total_amount).toFixed(2)}<br>
+            <strong>Metodo Pagamento:</strong> \${order.payment_method}
+          </div>
+
+          <h3>Prodotti</h3>
+          \${items.map(item => \`<div class="info-box">\${item.product_name} x\${item.quantity} = €\${parseFloat(item.total_price).toFixed(2)}</div>\`).join('')}
+
+          <div class="info-box">
+            <strong>Indirizzo:</strong><br>
+            \${order.billing_name}<br>
+            \${order.billing_address}<br>
+            \${order.billing_city} \${order.billing_postal_code}<br>
+            Tel: \${order.billing_phone}
+          </div>
+        </div>
+      </div>
+    </body>
+    </html>
+  \`;
+
+  try {
+    const info = await transporter.sendMail({
+      from: \`"CertiCredia Platform" <\${process.env.SMTP_USER}>\`,
+      to: process.env.NOTIFICATION_EMAIL || 'request@certicredia.org',
+      subject: \`Nuovo Ordine \${order.order_number}\`,
+      html: htmlContent,
+    });
+    logger.info(\`✅ Notifica ordine inviata agli admin\`);
+    return { success: true, messageId: info.messageId };
+  } catch (error) {
+    logger.error('❌ Errore invio notifica ordine:', error);
+    return { success: false, error: error.message };
+  }
+};

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accedi | CertiCredia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-slate-900 text-white min-h-screen flex items-center justify-center">
+    <div class="max-w-md w-full mx-4">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold mb-2">CERTI<span class="text-cyan-400">CREDIA</span></h1>
+            <p class="text-slate-400">Accedi al tuo account</p>
+        </div>
+
+        <!-- Tabs -->
+        <div class="flex mb-6 bg-slate-800 rounded-lg p-1">
+            <button id="tab-login" class="flex-1 py-2 rounded-md bg-cyan-500 text-white font-medium transition">Accedi</button>
+            <button id="tab-register" class="flex-1 py-2 rounded-md text-slate-400 hover:text-white transition">Registrati</button>
+        </div>
+
+        <!-- Login Form -->
+        <form id="login-form" class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium mb-2">Email</label>
+                <input type="email" name="email" required class="form-input w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-3 text-white">
+            </div>
+            <div>
+                <label class="block text-sm font-medium mb-2">Password</label>
+                <input type="password" name="password" required class="form-input w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-3 text-white">
+            </div>
+            <button type="submit" class="btn-primary w-full">Accedi</button>
+        </form>
+
+        <!-- Register Form -->
+        <form id="register-form" class="hidden space-y-4">
+            <div>
+                <label class="block text-sm font-medium mb-2">Nome Completo</label>
+                <input type="text" name="name" required class="form-input w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-3 text-white">
+            </div>
+            <div>
+                <label class="block text-sm font-medium mb-2">Email</label>
+                <input type="email" name="email" required class="form-input w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-3 text-white">
+            </div>
+            <div>
+                <label class="block text-sm font-medium mb-2">Password (min 8 caratteri)</label>
+                <input type="password" name="password" required minlength="8" class="form-input w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-3 text-white">
+            </div>
+            <div>
+                <label class="block text-sm font-medium mb-2">Azienda (opzionale)</label>
+                <input type="text" name="company" class="form-input w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-3 text-white">
+            </div>
+            <button type="submit" class="btn-primary w-full">Registrati</button>
+        </form>
+
+        <div class="text-center mt-6">
+            <a href="/" class="text-sm text-slate-400 hover:text-white">← Torna alla Home</a>
+        </div>
+    </div>
+
+    <script src="shop.js"></script>
+</body>
+</html>

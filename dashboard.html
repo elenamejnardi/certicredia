@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | CertiCredia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-slate-900 text-white">
+    <nav class="bg-slate-900/95 border-b border-slate-800 py-4">
+        <div class="max-w-7xl mx-auto px-4 flex justify-between">
+            <a href="/" class="text-xl font-bold">CERTI<span class="text-cyan-400">CREDIA</span></a>
+            <div class="flex gap-4">
+                <a href="/shop.html" class="text-slate-300 hover:text-white">Shop</a>
+                <button id="logout-btn" class="text-red-400 hover:text-red-300">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 py-12">
+        <h1 class="text-3xl font-bold mb-8">Dashboard</h1>
+
+        <div class="grid md:grid-cols-3 gap-6 mb-12">
+            <div class="bg-slate-800 rounded-xl p-6">
+                <h3 class="text-sm text-slate-400 mb-2">Certificazioni Attive</h3>
+                <p class="text-3xl font-bold" id="active-certs">0</p>
+            </div>
+            <div class="bg-slate-800 rounded-xl p-6">
+                <h3 class="text-sm text-slate-400 mb-2">Ordini Totali</h3>
+                <p class="text-3xl font-bold" id="total-orders">0</p>
+            </div>
+            <div class="bg-slate-800 rounded-xl p-6">
+                <h3 class="text-sm text-slate-400 mb-2">Ultimo Accesso</h3>
+                <p class="text-sm" id="last-login">-</p>
+            </div>
+        </div>
+
+        <div class="bg-slate-800 rounded-xl p-6 mb-8">
+            <h2 class="text-2xl font-bold mb-6">I Miei Ordini</h2>
+            <div id="orders-list" class="space-y-4"></div>
+            <div id="no-orders" class="hidden text-center py-8 text-slate-400">
+                <p>Nessun ordine effettuato</p>
+                <a href="/shop.html" class="btn-primary mt-4 inline-block">Vai allo Shop</a>
+            </div>
+        </div>
+
+        <div class="bg-slate-800 rounded-xl p-6">
+            <h2 class="text-2xl font-bold mb-6">Profilo</h2>
+            <div id="profile-info"></div>
+        </div>
+    </main>
+
+    <script src="shop.js"></script>
+</body>
+</html>

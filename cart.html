@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrello | CertiCredia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-slate-900 text-white min-h-screen">
+    <nav class="bg-slate-900/95 backdrop-blur-md border-b border-slate-800 py-4">
+        <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
+            <a href="/" class="text-xl font-bold">CERTI<span class="text-cyan-400">CREDIA</span></a>
+            <div class="flex gap-4">
+                <a href="/shop.html" class="text-slate-300 hover:text-white">Shop</a>
+                <div id="auth-nav"></div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto px-4 py-12">
+        <h1 class="text-3xl font-bold mb-8">Carrello</h1>
+        
+        <div id="cart-content" class="grid md:grid-cols-3 gap-8">
+            <div class="md:col-span-2">
+                <div id="cart-items" class="space-y-4"></div>
+                <div id="cart-empty" class="hidden text-center py-16 bg-slate-800 rounded-xl">
+                    <p class="text-slate-400">Il carrello è vuoto</p>
+                    <a href="/shop.html" class="btn-primary mt-4 inline-block">Vai allo Shop</a>
+                </div>
+            </div>
+            
+            <div class="md:col-span-1">
+                <div class="bg-slate-800 rounded-xl p-6 sticky top-24">
+                    <h3 class="text-xl font-bold mb-4">Riepilogo</h3>
+                    <div class="space-y-2 mb-6">
+                        <div class="flex justify-between">
+                            <span>Subtotale</span>
+                            <span id="cart-subtotal">€0.00</span>
+                        </div>
+                        <div class="flex justify-between text-sm text-slate-400">
+                            <span>IVA (22%)</span>
+                            <span id="cart-tax">€0.00</span>
+                        </div>
+                        <div class="border-t border-slate-700 pt-2 mt-2">
+                            <div class="flex justify-between text-xl font-bold">
+                                <span>Totale</span>
+                                <span id="cart-total" class="text-cyan-400">€0.00</span>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="/checkout.html" id="checkout-btn" class="btn-primary w-full block text-center">
+                        Procedi al Checkout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="shop.js"></script>
+</body>
+</html>
