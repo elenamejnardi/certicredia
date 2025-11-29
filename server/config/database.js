@@ -143,7 +143,8 @@ const initDatabase = async () => {
         product_id INTEGER REFERENCES products(id) ON DELETE CASCADE,
         quantity INTEGER NOT NULL DEFAULT 1,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        CONSTRAINT unique_cart_user_product UNIQUE (user_id, product_id)
       );
     `);
 
