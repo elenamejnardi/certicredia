@@ -194,19 +194,13 @@ const initDatabase = async () => {
       CREATE INDEX IF NOT EXISTS idx_orders_created_at ON orders(created_at DESC);
     `);
 
-    // Migrate cart table: remove old constraint and indexes if they exist
+    // Migrate cart table: remove old constraint if exists (one-time migration)
     await client.query(`
       DO $$ BEGIN
         ALTER TABLE cart DROP CONSTRAINT IF EXISTS unique_cart_user_product;
       EXCEPTION
         WHEN undefined_object THEN NULL;
       END $$;
-    `);
-
-    // Drop old indexes that might conflict
-    await client.query(`
-      DROP INDEX IF EXISTS idx_cart_unique_user_product;
-      DROP INDEX IF EXISTS idx_cart_unique_session_product;
     `);
 
     // Create regular indices for cart
@@ -217,16 +211,25 @@ const initDatabase = async () => {
 
     // Create partial unique indexes for cart (authenticated and guest users)
     // These allow ON CONFLICT to work correctly
+    // Using conditional creation to avoid recreating on every restart
     await client.query(`
-      CREATE UNIQUE INDEX idx_cart_unique_user_product
-      ON cart(user_id, product_id)
-      WHERE user_id IS NOT NULL;
+      DO $$ BEGIN
+        CREATE UNIQUE INDEX IF NOT EXISTS idx_cart_unique_user_product
+        ON cart(user_id, product_id)
+        WHERE user_id IS NOT NULL;
+      EXCEPTION
+        WHEN duplicate_table THEN NULL;
+      END $$;
     `);
 
     await client.query(`
-      CREATE UNIQUE INDEX idx_cart_unique_session_product
-      ON cart(session_id, product_id)
-      WHERE session_id IS NOT NULL;
+      DO $$ BEGIN
+        CREATE UNIQUE INDEX IF NOT EXISTS idx_cart_unique_session_product
+        ON cart(session_id, product_id)
+        WHERE session_id IS NOT NULL;
+      EXCEPTION
+        WHEN duplicate_table THEN NULL;
+      END $$;
     `);
 
     // Create indices for user_certifications
