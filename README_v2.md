@@ -1,4 +1,4 @@
-# CertiCredia Italia - Piattaforma Backend Accreditamento Cybersecurity
+# CertiCredia - Piattaforma Backend Accreditamento Cybersecurity
 
 **Versione 2.0** - Backend completo per gestione accreditamenti cybersecurity, Enti e Specialist.
 
@@ -797,7 +797,7 @@ npm audit fix
 
 ## 📄 Licenza
 
-Proprietario - CertiCredia Italia S.r.l.
+Proprietario - CertiCredia
 
 ---
 

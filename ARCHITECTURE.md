@@ -1153,7 +1153,7 @@ req.user = decoded;
 // Setup
 const secret = speakeasy.generateSecret({
   name: 'CertiCredia (user@example.com)',
-  issuer: 'CertiCredia Italia',
+  issuer: 'CertiCredia',
   length: 32
 });
 
