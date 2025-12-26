@@ -422,3 +422,278 @@ export const verifyEmail = async (req, res) => {
     });
   }
 };
+
+/**
+ * Request password reset - Send reset token via email
+ */
+export const forgotPassword = async (req, res) => {
+  const client = await pool.connect();
+
+  try {
+    const { email } = req.body;
+
+    // Find user
+    const userResult = await client.query(
+      'SELECT id, email, name FROM users WHERE email = $1 AND active = true',
+      [email]
+    );
+
+    // Always return success to prevent email enumeration
+    if (userResult.rows.length === 0) {
+      return res.json({
+        success: true,
+        message: 'Se l\'email esiste, riceverai le istruzioni per il reset della password'
+      });
+    }
+
+    const user = userResult.rows[0];
+
+    // Generate reset token (random 6-digit code)
+    const resetToken = Math.floor(100000 + Math.random() * 900000).toString();
+    const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+
+    await client.query('BEGIN');
+
+    // Store reset token
+    await client.query(
+      `INSERT INTO password_reset_tokens (user_id, token, expires_at)
+       VALUES ($1, $2, $3)
+       ON CONFLICT (user_id)
+       DO UPDATE SET token = $2, expires_at = $3, created_at = CURRENT_TIMESTAMP`,
+      [user.id, resetToken, expiresAt]
+    );
+
+    await client.query('COMMIT');
+
+    logger.info(`✅ Reset password richiesto per: ${email}`);
+
+    // Send reset email
+    if (resend) {
+      try {
+        await resend.emails.send({
+          from: process.env.EMAIL_FROM || 'onboarding@resend.dev',
+          to: email,
+          subject: '🔑 Reset Password - CertiCredia',
+          html: `
+            <!DOCTYPE html>
+            <html>
+            <head>
+              <style>
+                body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                .header { background: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+                .content { background: #f8fafc; padding: 30px; }
+                .code { font-size: 32px; font-weight: bold; color: #0891b2; text-align: center; letter-spacing: 8px; padding: 20px; background: white; border-radius: 8px; margin: 20px 0; }
+                .footer { background: #1e293b; color: white; padding: 20px; text-align: center; border-radius: 0 0 10px 10px; font-size: 12px; }
+                .warning { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 15px; margin: 20px 0; }
+              </style>
+            </head>
+            <body>
+              <div class="container">
+                <div class="header">
+                  <h1 style="margin: 0;">🛡️ CertiCredia Italia</h1>
+                </div>
+                <div class="content">
+                  <h2 style="color: #0891b2;">Reset Password</h2>
+                  <p>Ciao <strong>${user.name}</strong>,</p>
+                  <p>Hai richiesto di reimpostare la tua password. Usa il codice seguente:</p>
+                  <div class="code">${resetToken}</div>
+                  <p style="text-align: center; color: #64748b;">
+                    Il codice è valido per <strong>1 ora</strong>
+                  </p>
+                  <div class="warning">
+                    <strong>⚠️ Nota di sicurezza:</strong> Se non hai richiesto questo reset, ignora questa email.
+                    La tua password rimarrà invariata.
+                  </div>
+                  <p style="margin-top: 30px; color: #64748b; font-size: 14px;">
+                    Per assistenza, contattaci a
+                    <a href="mailto:${process.env.NOTIFICATION_EMAIL || 'request@certicredia.org'}" style="color: #0891b2;">
+                      ${process.env.NOTIFICATION_EMAIL || 'request@certicredia.org'}
+                    </a>
+                  </p>
+                </div>
+                <div class="footer">
+                  <p>© 2025 CertiCredia Italia S.r.l. - Certificazioni Cybersecurity</p>
+                </div>
+              </div>
+            </body>
+            </html>
+          `
+        });
+        logger.info(`✅ Email reset password inviata a: ${email}`);
+      } catch (emailError) {
+        logger.error(`❌ Errore invio email reset a ${email}:`, emailError);
+        // Continue anyway - token is saved in DB
+      }
+    }
+
+    res.json({
+      success: true,
+      message: 'Se l\'email esiste, riceverai le istruzioni per il reset della password'
+    });
+
+  } catch (error) {
+    await client.query('ROLLBACK');
+    logger.error('Errore forgot password:', error);
+
+    res.status(500).json({
+      success: false,
+      message: 'Errore durante la richiesta di reset password'
+    });
+  } finally {
+    client.release();
+  }
+};
+
+/**
+ * Reset password with token
+ */
+export const resetPassword = async (req, res) => {
+  const client = await pool.connect();
+
+  try {
+    const { email, token, newPassword } = req.body;
+
+    await client.query('BEGIN');
+
+    // Find user and token
+    const result = await client.query(
+      `SELECT u.id, u.email, u.name, t.token, t.expires_at
+       FROM users u
+       INNER JOIN password_reset_tokens t ON u.id = t.user_id
+       WHERE u.email = $1 AND u.active = true`,
+      [email]
+    );
+
+    if (result.rows.length === 0) {
+      await client.query('ROLLBACK');
+      return res.status(400).json({
+        success: false,
+        message: 'Token non valido o scaduto'
+      });
+    }
+
+    const user = result.rows[0];
+
+    // Check token
+    if (user.token !== token) {
+      await client.query('ROLLBACK');
+      return res.status(400).json({
+        success: false,
+        message: 'Codice non corretto'
+      });
+    }
+
+    // Check expiration
+    if (new Date() > new Date(user.expires_at)) {
+      await client.query('ROLLBACK');
+      return res.status(400).json({
+        success: false,
+        message: 'Il codice è scaduto. Richiedi un nuovo reset'
+      });
+    }
+
+    // Hash new password
+    const passwordHash = await bcrypt.hash(newPassword, SALT_ROUNDS);
+
+    // Update password
+    await client.query(
+      'UPDATE users SET password_hash = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2',
+      [passwordHash, user.id]
+    );
+
+    // Delete used token
+    await client.query(
+      'DELETE FROM password_reset_tokens WHERE user_id = $1',
+      [user.id]
+    );
+
+    await client.query('COMMIT');
+
+    logger.info(`✅ Password reimpostata per: ${email}`);
+
+    // Send confirmation email
+    if (resend) {
+      try {
+        await resend.emails.send({
+          from: process.env.EMAIL_FROM || 'onboarding@resend.dev',
+          to: email,
+          subject: '✅ Password Modificata - CertiCredia',
+          html: `
+            <!DOCTYPE html>
+            <html>
+            <head>
+              <style>
+                body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                .header { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+                .content { background: #f8fafc; padding: 30px; }
+                .footer { background: #1e293b; color: white; padding: 20px; text-align: center; border-radius: 0 0 10px 10px; font-size: 12px; }
+              </style>
+            </head>
+            <body>
+              <div class="container">
+                <div class="header">
+                  <h1 style="margin: 0;">✅ Password Modificata</h1>
+                </div>
+                <div class="content">
+                  <p>Ciao <strong>${user.name}</strong>,</p>
+                  <p>La tua password è stata modificata con successo.</p>
+                  <p>Se non hai effettuato questa modifica, contattaci immediatamente.</p>
+                </div>
+                <div class="footer">
+                  <p>© 2025 CertiCredia Italia S.r.l.</p>
+                </div>
+              </div>
+            </body>
+            </html>
+          `
+        });
+      } catch (emailError) {
+        logger.error(`❌ Errore invio email conferma reset:`, emailError);
+      }
+    }
+
+    res.json({
+      success: true,
+      message: 'Password reimpostata con successo. Ora puoi effettuare il login'
+    });
+
+  } catch (error) {
+    await client.query('ROLLBACK');
+    logger.error('Errore reset password:', error);
+
+    res.status(500).json({
+      success: false,
+      message: 'Errore durante il reset della password'
+    });
+  } finally {
+    client.release();
+  }
+};
+
+/**
+ * Get all users (Admin only)
+ */
+export const getAllUsers = async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT id, email, name, role, company, phone, created_at, last_login, active, email_verified
+       FROM users
+       ORDER BY created_at DESC`
+    );
+
+    res.json({
+      success: true,
+      data: result.rows
+    });
+
+  } catch (error) {
+    logger.error('Errore recupero utenti:', error);
+
+    res.status(500).json({
+      success: false,
+      message: 'Errore durante il recupero degli utenti'
+    });
+  }
+};

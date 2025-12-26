@@ -6,14 +6,19 @@ import {
   getProfile,
   updateProfile,
   changePassword,
-  verifyEmail
+  verifyEmail,
+  forgotPassword,
+  resetPassword,
+  getAllUsers
 } from '../controllers/authController.js';
-import { authenticate } from '../middleware/auth.js';
+import { authenticate, isAdmin } from '../middleware/auth.js';
 import {
   registerValidationRules,
   loginValidationRules,
   profileUpdateValidationRules,
   changePasswordValidationRules,
+  forgotPasswordValidationRules,
+  resetPasswordValidationRules,
   validate
 } from '../middleware/authValidation.js';
 
@@ -67,5 +72,26 @@ router.put('/password', authenticate, changePasswordValidationRules, validate, c
  * @access  Private
  */
 router.get('/verify/:token', authenticate, verifyEmail);
+
+/**
+ * @route   POST /api/auth/forgot-password
+ * @desc    Request password reset (sends email with code)
+ * @access  Public
+ */
+router.post('/forgot-password', forgotPasswordValidationRules, validate, forgotPassword);
+
+/**
+ * @route   POST /api/auth/reset-password
+ * @desc    Reset password with token
+ * @access  Public
+ */
+router.post('/reset-password', resetPasswordValidationRules, validate, resetPassword);
+
+/**
+ * @route   GET /api/auth/users
+ * @desc    Get all users (Admin only)
+ * @access  Private (Admin)
+ */
+router.get('/users', authenticate, isAdmin, getAllUsers);
 
 export default router;

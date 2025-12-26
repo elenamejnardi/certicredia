@@ -22,6 +22,8 @@ async function register(form) { const d = await api('/auth/register', { method: 
 async function login(form) { const d = await api('/auth/login', { method: 'POST', body: JSON.stringify(form) }); if (d.data?.accessToken) { setToken(d.data.accessToken); state.user = d.data.user; } return d; }
 async function logout() { await api('/auth/logout', { method: 'POST' }); removeToken(); state.user = null; location.href = '/'; }
 async function getProfile() { const d = await api('/auth/profile'); if (d.success) state.user = d.data; return d; }
+async function forgotPassword(email) { return await api('/auth/forgot-password', { method: 'POST', body: JSON.stringify({ email }) }); }
+async function resetPassword(email, token, newPassword) { return await api('/auth/reset-password', { method: 'POST', body: JSON.stringify({ email, token, newPassword }) }); }
 async function getProducts() { const d = await api('/products'); if (d.success) state.products = d.data; return d; }
 async function getCart() { const d = await api('/cart'); if (d.success) state.cart = d.data; return d; }
 async function addToCart(pid, qty = 1) { return await api('/cart', { method: 'POST', body: JSON.stringify({ product_id: pid, quantity: qty }) }); }
@@ -113,11 +115,44 @@ async function handleRemoveCart(id) { try { await removeFromCart(id); await init
 function initAuth() {
     const lt = document.getElementById('tab-login'), rt = document.getElementById('tab-register');
     const lf = document.getElementById('login-form'), rf = document.getElementById('register-form');
+    const resetSection = document.getElementById('reset-password-section');
+    const forgotLink = document.getElementById('forgot-password-link');
+    const backLink = document.getElementById('back-to-login-link');
+    const sendResetBtn = document.getElementById('send-reset-btn');
+    const resetPasswordBtn = document.getElementById('reset-password-btn');
+
     if (!lt) return;
-    lt.onclick = () => { lt.className = 'flex-1 py-2 rounded-md bg-cyan-500 text-white font-medium'; rt.className = 'flex-1 py-2 rounded-md text-slate-400'; lf.classList.remove('hidden'); rf.classList.add('hidden'); };
-    rt.onclick = () => { rt.className = 'flex-1 py-2 rounded-md bg-cyan-500 text-white font-medium'; lt.className = 'flex-1 py-2 rounded-md text-slate-400'; rf.classList.remove('hidden'); lf.classList.add('hidden'); };
+
+    lt.onclick = () => { lt.className = 'flex-1 py-2 rounded-md bg-cyan-500 text-white font-medium'; rt.className = 'flex-1 py-2 rounded-md text-slate-400'; lf.classList.remove('hidden'); rf.classList.add('hidden'); resetSection.classList.add('hidden'); };
+    rt.onclick = () => { rt.className = 'flex-1 py-2 rounded-md bg-cyan-500 text-white font-medium'; lt.className = 'flex-1 py-2 rounded-md text-slate-400'; rf.classList.remove('hidden'); lf.classList.add('hidden'); resetSection.classList.add('hidden'); };
     lf.onsubmit = async (e) => { e.preventDefault(); try { await login(Object.fromEntries(new FormData(e.target))); notify('Login OK!', 'success'); setTimeout(() => location.href = '/dashboard.html', 1000); } catch (er) { notify(er.message, 'error'); } };
     rf.onsubmit = async (e) => { e.preventDefault(); try { await register(Object.fromEntries(new FormData(e.target))); notify('Registrato!', 'success'); setTimeout(() => location.href = '/dashboard.html', 1000); } catch (er) { notify(er.message, 'error'); } };
+
+    forgotLink?.addEventListener('click', (e) => { e.preventDefault(); lf.classList.add('hidden'); rf.classList.add('hidden'); resetSection.classList.remove('hidden'); });
+    backLink?.addEventListener('click', (e) => { e.preventDefault(); resetSection.classList.add('hidden'); lf.classList.remove('hidden'); document.getElementById('reset-step-1').classList.remove('hidden'); document.getElementById('reset-step-2').classList.add('hidden'); });
+
+    sendResetBtn?.addEventListener('click', async () => {
+        const email = document.getElementById('reset-email').value;
+        if (!email) { notify('Inserisci email', 'error'); return; }
+        try {
+            await forgotPassword(email);
+            notify('Codice inviato! Controlla la tua email', 'success');
+            document.getElementById('reset-step-1').classList.add('hidden');
+            document.getElementById('reset-step-2').classList.remove('hidden');
+        } catch (er) { notify(er.message, 'error'); }
+    });
+
+    resetPasswordBtn?.addEventListener('click', async () => {
+        const email = document.getElementById('reset-email').value;
+        const token = document.getElementById('reset-token').value;
+        const newPassword = document.getElementById('reset-new-password').value;
+        if (!token || !newPassword) { notify('Compila tutti i campi', 'error'); return; }
+        try {
+            await resetPassword(email, token, newPassword);
+            notify('Password reimpostata! Effettua il login', 'success');
+            setTimeout(() => { resetSection.classList.add('hidden'); lf.classList.remove('hidden'); document.getElementById('reset-step-1').classList.remove('hidden'); document.getElementById('reset-step-2').classList.add('hidden'); }, 1500);
+        } catch (er) { notify(er.message, 'error'); }
+    });
 }
 
 async function initCheckout() {

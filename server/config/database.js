@@ -165,6 +165,17 @@ const initDatabase = async () => {
       );
     `);
 
+    // Create password_reset_tokens table
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS password_reset_tokens (
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER UNIQUE REFERENCES users(id) ON DELETE CASCADE,
+        token VARCHAR(10) NOT NULL,
+        expires_at TIMESTAMP NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+
     // Create indices for contacts
     await client.query(`
       CREATE INDEX IF NOT EXISTS idx_contacts_email ON contacts(email);
@@ -236,6 +247,12 @@ const initDatabase = async () => {
     await client.query(`
       CREATE INDEX IF NOT EXISTS idx_user_certifications_user_id ON user_certifications(user_id);
       CREATE INDEX IF NOT EXISTS idx_user_certifications_code ON user_certifications(certification_code);
+    `);
+
+    // Create indices for password_reset_tokens
+    await client.query(`
+      CREATE INDEX IF NOT EXISTS idx_password_reset_user_id ON password_reset_tokens(user_id);
+      CREATE INDEX IF NOT EXISTS idx_password_reset_expires_at ON password_reset_tokens(expires_at);
     `);
 
     await client.query('COMMIT');

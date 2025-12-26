@@ -149,3 +149,6 @@ export const requireEmailVerified = (req, res, next) => {
 
   next();
 };
+
+// Alias for requireAdmin
+export const isAdmin = requireAdmin;
