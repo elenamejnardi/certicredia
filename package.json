@@ -7,6 +7,7 @@
   "scripts": {
     "start": "node server/index.js",
     "dev": "node --watch server/index.js",
+    "setup": "node scripts/setup-database.js",
     "seed": "node server/utils/seedProducts.js",
     "seed:demo": "node server/utils/seedDemoData.js",
     "seed:users": "node server/utils/seedUsers.js",
