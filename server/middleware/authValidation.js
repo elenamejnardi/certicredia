@@ -132,6 +132,49 @@ export const changePasswordValidationRules = [
 ];
 
 /**
+ * Validation rules for forgot password
+ */
+export const forgotPasswordValidationRules = [
+  body('email')
+    .trim()
+    .notEmpty()
+    .withMessage('L\'email è obbligatoria')
+    .isEmail()
+    .withMessage('Formato email non valido')
+    .normalizeEmail(),
+];
+
+/**
+ * Validation rules for reset password
+ */
+export const resetPasswordValidationRules = [
+  body('email')
+    .trim()
+    .notEmpty()
+    .withMessage('L\'email è obbligatoria')
+    .isEmail()
+    .withMessage('Formato email non valido')
+    .normalizeEmail(),
+
+  body('token')
+    .trim()
+    .notEmpty()
+    .withMessage('Il codice di reset è obbligatorio')
+    .isLength({ min: 6, max: 6 })
+    .withMessage('Il codice deve essere di 6 cifre')
+    .isNumeric()
+    .withMessage('Il codice deve contenere solo numeri'),
+
+  body('newPassword')
+    .notEmpty()
+    .withMessage('La nuova password è obbligatoria')
+    .isLength({ min: 8 })
+    .withMessage('La nuova password deve essere di almeno 8 caratteri')
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/)
+    .withMessage('La nuova password deve contenere almeno una lettera maiuscola, una minuscola e un numero'),
+];
+
+/**
  * Middleware to check validation results
  */
 export const validate = (req, res, next) => {

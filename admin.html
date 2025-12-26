@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel | CertiCredia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-slate-900 text-white">
+    <!-- Navbar -->
+    <nav class="bg-slate-900/95 border-b border-slate-800 py-4">
+        <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
+            <a href="/" class="flex items-center space-x-2">
+                <img src="Logo.svg" alt="CertiCredia Logo" class="w-10 h-10">
+                <span class="text-xl font-bold">CERTI<span class="text-cyan-400">CREDIA</span> <span class="text-xs text-slate-500">ADMIN</span></span>
+            </a>
+            <div class="flex gap-4 items-center">
+                <span id="admin-user-name" class="text-sm text-slate-400"></span>
+                <button id="logout-btn" class="text-red-400 hover:text-red-300 text-sm">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-slate-800 border-r border-slate-700">
+            <div class="p-4 space-y-2">
+                <button onclick="showSection('dashboard')" class="nav-item active w-full text-left px-4 py-3 rounded-lg hover:bg-slate-700 transition-colors" data-section="dashboard">
+                    <span class="flex items-center gap-3">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
+                        </svg>
+                        Dashboard
+                    </span>
+                </button>
+
+                <button onclick="showSection('products')" class="nav-item w-full text-left px-4 py-3 rounded-lg hover:bg-slate-700 transition-colors" data-section="products">
+                    <span class="flex items-center gap-3">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                        </svg>
+                        Prodotti
+                    </span>
+                </button>
+
+                <button onclick="showSection('orders')" class="nav-item w-full text-left px-4 py-3 rounded-lg hover:bg-slate-700 transition-colors" data-section="orders">
+                    <span class="flex items-center gap-3">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                        </svg>
+                        Ordini
+                    </span>
+                </button>
+
+                <button onclick="showSection('users')" class="nav-item w-full text-left px-4 py-3 rounded-lg hover:bg-slate-700 transition-colors" data-section="users">
+                    <span class="flex items-center gap-3">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                        </svg>
+                        Utenti
+                    </span>
+                </button>
+
+                <button onclick="showSection('contacts')" class="nav-item w-full text-left px-4 py-3 rounded-lg hover:bg-slate-700 transition-colors" data-section="contacts">
+                    <span class="flex items-center gap-3">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                        </svg>
+                        Contatti
+                    </span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-8">
+            <!-- Dashboard Section -->
+            <section id="section-dashboard" class="section-content">
+                <h1 class="text-3xl font-bold mb-8">Dashboard</h1>
+
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-slate-800 rounded-xl p-6 border border-slate-700">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-slate-400">Prodotti Totali</p>
+                                <p class="text-3xl font-bold mt-2" id="stats-products">0</p>
+                            </div>
+                            <div class="w-12 h-12 bg-cyan-500/10 rounded-lg flex items-center justify-center">
+                                <svg class="w-6 h-6 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-800 rounded-xl p-6 border border-slate-700">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-slate-400">Ordini Totali</p>
+                                <p class="text-3xl font-bold mt-2" id="stats-orders">0</p>
+                            </div>
+                            <div class="w-12 h-12 bg-blue-500/10 rounded-lg flex items-center justify-center">
+                                <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-800 rounded-xl p-6 border border-slate-700">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-slate-400">Utenti Registrati</p>
+                                <p class="text-3xl font-bold mt-2" id="stats-users">0</p>
+                            </div>
+                            <div class="w-12 h-12 bg-green-500/10 rounded-lg flex items-center justify-center">
+                                <svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-800 rounded-xl p-6 border border-slate-700">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-slate-400">Contatti Ricevuti</p>
+                                <p class="text-3xl font-bold mt-2" id="stats-contacts">0</p>
+                            </div>
+                            <div class="w-12 h-12 bg-purple-500/10 rounded-lg flex items-center justify-center">
+                                <svg class="w-6 h-6 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800 rounded-xl p-6 border border-slate-700">
+                    <h2 class="text-xl font-bold mb-4">Ultimi Ordini</h2>
+                    <div id="recent-orders" class="space-y-3"></div>
+                </div>
+            </section>
+
+            <!-- Products Section -->
+            <section id="section-products" class="section-content hidden">
+                <div class="flex justify-between items-center mb-8">
+                    <h1 class="text-3xl font-bold">Gestione Prodotti</h1>
+                    <button onclick="showProductForm()" class="bg-cyan-500 hover:bg-cyan-600 text-slate-900 font-bold px-6 py-3 rounded-lg transition-colors">
+                        + Nuovo Prodotto
+                    </button>
+                </div>
+
+                <div id="product-form" class="hidden bg-slate-800 rounded-xl p-6 border border-slate-700 mb-6">
+                    <h3 class="text-xl font-bold mb-4" id="product-form-title">Nuovo Prodotto</h3>
+                    <form id="product-edit-form" class="space-y-4">
+                        <input type="hidden" id="product-id">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm text-slate-400 mb-2">Nome</label>
+                                <input type="text" id="product-name" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white">
+                            </div>
+                            <div>
+                                <label class="block text-sm text-slate-400 mb-2">Slug</label>
+                                <input type="text" id="product-slug" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm text-slate-400 mb-2">Descrizione Breve</label>
+                            <input type="text" id="product-short-desc" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm text-slate-400 mb-2">Descrizione Completa</label>
+                            <textarea id="product-description" rows="3" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white"></textarea>
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-sm text-slate-400 mb-2">Prezzo (€)</label>
+                                <input type="number" step="0.01" id="product-price" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white">
+                            </div>
+                            <div>
+                                <label class="block text-sm text-slate-400 mb-2">Categoria</label>
+                                <input type="text" id="product-category" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white">
+                            </div>
+                            <div>
+                                <label class="block text-sm text-slate-400 mb-2">Durata (mesi)</label>
+                                <input type="number" id="product-duration" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white">
+                            </div>
+                        </div>
+
+                        <div class="flex gap-4">
+                            <button type="submit" class="bg-cyan-500 hover:bg-cyan-600 text-slate-900 font-bold px-6 py-2 rounded-lg">Salva</button>
+                            <button type="button" onclick="hideProductForm()" class="bg-slate-700 hover:bg-slate-600 px-6 py-2 rounded-lg">Annulla</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden">
+                    <table class="w-full">
+                        <thead class="bg-slate-900">
+                            <tr>
+                                <th class="text-left p-4 text-slate-400 font-medium">Nome</th>
+                                <th class="text-left p-4 text-slate-400 font-medium">Categoria</th>
+                                <th class="text-left p-4 text-slate-400 font-medium">Prezzo</th>
+                                <th class="text-left p-4 text-slate-400 font-medium">Stato</th>
+                                <th class="text-right p-4 text-slate-400 font-medium">Azioni</th>
+                            </tr>
+                        </thead>
+                        <tbody id="products-table-body">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Orders Section -->
+            <section id="section-orders" class="section-content hidden">
+                <h1 class="text-3xl font-bold mb-8">Gestione Ordini</h1>
+
+                <div class="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden">
+                    <table class="w-full">
+                        <thead class="bg-slate-900">
+                            <tr>
+                                <th class="text-left p-4 text-slate-400 font-medium">N. Ordine</th>
+                                <th class="text-left p-4 text-slate-400 font-medium">Cliente</th>
+                                <th class="text-left p-4 text-slate-400 font-medium">Totale</th>
+                                <th class="text-left p-4 text-slate-400 font-medium">Stato</th>
+                                <th class="text-left p-4 text-slate-400 font-medium">Data</th>
+                                <th class="text-right p-4 text-slate-400 font-medium">Azioni</th>
+                            </tr>
+                        </thead>
+                        <tbody id="orders-table-body">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Users Section -->
+            <section id="section-users" class="section-content hidden">
+                <h1 class="text-3xl font-bold mb-8">Gestione Utenti</h1>
+
+                <div class="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden">
+                    <table class="w-full">
+                        <thead class="bg-slate-900">
+                            <tr>
+                                <th class="text-left p-4 text-slate-400 font-medium">Nome</th>
+                                <th class="text-left p-4 text-slate-400 font-medium">Email</th>
+                                <th class="text-left p-4 text-slate-400 font-medium">Ruolo</th>
+                                <th class="text-left p-4 text-slate-400 font-medium">Registrato</th>
+                                <th class="text-left p-4 text-slate-400 font-medium">Stato</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-table-body">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Contacts Section -->
+            <section id="section-contacts" class="section-content hidden">
+                <h1 class="text-3xl font-bold mb-8">Contatti Ricevuti</h1>
+
+                <div class="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden">
+                    <table class="w-full">
+                        <thead class="bg-slate-900">
+                            <tr>
+                                <th class="text-left p-4 text-slate-400 font-medium">Nome</th>
+                                <th class="text-left p-4 text-slate-400 font-medium">Email</th>
+                                <th class="text-left p-4 text-slate-400 font-medium">Tipo</th>
+                                <th class="text-left p-4 text-slate-400 font-medium">Messaggio</th>
+                                <th class="text-left p-4 text-slate-400 font-medium">Data</th>
+                                <th class="text-left p-4 text-slate-400 font-medium">Stato</th>
+                            </tr>
+                        </thead>
+                        <tbody id="contacts-table-body">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Order Detail Modal -->
+    <div id="order-modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+        <div class="bg-slate-800 rounded-xl p-8 max-w-3xl w-full mx-4 max-h-[90vh] overflow-y-auto border border-slate-700">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold">Dettagli Ordine</h2>
+                <button onclick="closeOrderModal()" class="text-slate-400 hover:text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <div id="order-detail-content"></div>
+        </div>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+</html>
