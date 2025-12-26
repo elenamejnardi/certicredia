@@ -186,13 +186,22 @@ async function setupDatabase() {
     // =============================================
     console.log('4️⃣  Inserendo dati di test...');
 
-    // Admin user (password: Admin123!@#)
-    const adminPasswordHash = await bcrypt.hash('Admin123!@#', SALT_ROUNDS);
-    await client.query(`
-      INSERT INTO users (email, password_hash, name, role, company, active, email_verified)
-      VALUES ($1, $2, $3, $4, $5, $6, $7)
-    `, ['admin@certicredia.test', adminPasswordHash, 'Admin System', 'admin', 'CertiCredia', true, true]);
-    console.log('   ✅ Admin user creato');
+    // Utenti di test
+    const testUsers = [
+      { email: 'admin@certicredia.test', password: 'Admin123!@#', name: 'Admin System', role: 'admin', company: 'CertiCredia' },
+      { email: 'user@certicredia.test', password: 'User123!@#', name: 'Mario Rossi', role: 'user', company: 'Acme Corp' },
+      { email: 'specialist@certicredia.test', password: 'Specialist123!@#', name: 'Giulia Verdi', role: 'specialist', company: null },
+      { email: 'organization@certicredia.test', password: 'Org123!@#', name: 'Paolo Bianchi', role: 'organization_admin', company: 'Enterprise SRL' }
+    ];
+
+    for (const user of testUsers) {
+      const passwordHash = await bcrypt.hash(user.password, SALT_ROUNDS);
+      await client.query(`
+        INSERT INTO users (email, password_hash, name, role, company, active, email_verified)
+        VALUES ($1, $2, $3, $4, $5, $6, $7)
+      `, [user.email, passwordHash, user.name, user.role, user.company, true, true]);
+      console.log(`   ✅ ${user.role}: ${user.email}`);
+    }
 
     // Prodotti
     await client.query(`
@@ -208,12 +217,22 @@ async function setupDatabase() {
     // =============================================
     // 5. RIEPILOGO
     // =============================================
-    console.log('✅ ================================');
+    console.log('\n✅ ================================');
     console.log('✅ DATABASE PRONTO!');
     console.log('✅ ================================\n');
-    console.log('📋 CREDENZIALI ADMIN:');
+    console.log('📋 CREDENZIALI TEST:\n');
+    console.log('🔑 ADMIN:');
     console.log('   Email: admin@certicredia.test');
     console.log('   Password: Admin123!@#\n');
+    console.log('👤 USER:');
+    console.log('   Email: user@certicredia.test');
+    console.log('   Password: User123!@#\n');
+    console.log('🎓 SPECIALIST:');
+    console.log('   Email: specialist@certicredia.test');
+    console.log('   Password: Specialist123!@#\n');
+    console.log('🏢 ORGANIZATION ADMIN:');
+    console.log('   Email: organization@certicredia.test');
+    console.log('   Password: Org123!@#\n');
     console.log('🚀 Avvia il server: npm run dev');
     console.log('🌐 Admin panel: http://localhost:3000/admin.html\n');
 
