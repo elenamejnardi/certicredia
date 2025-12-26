@@ -127,6 +127,18 @@
     </div>
   </div>
 
-  <script src="/js/modules/specialist-dashboard.js" type="module"></script>
+  <!-- Common Dashboard Scripts -->
+  <script src="/public/js/dashboard-common.js"></script>
+
+  <!-- Specialist Dashboard Script -->
+  <script>
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      const user = getCurrentUser();
+      console.log('Specialist dashboard initialized for:', user);
+
+      // TODO: Load specialist data when API is ready
+    });
+  </script>
 </body>
 </html>

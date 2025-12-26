@@ -173,6 +173,22 @@
     </div>
   </div>
 
-  <script src="/js/modules/ente-dashboard.js" type="module"></script>
+  <!-- Common Dashboard Scripts -->
+  <script src="/public/js/dashboard-common.js"></script>
+
+  <!-- Ente Dashboard Script -->
+  <script>
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      const user = getCurrentUser();
+      if (user && user.company) {
+        const orgNameEl = document.getElementById('orgName');
+        if (orgNameEl) orgNameEl.textContent = user.company;
+      }
+
+      // TODO: Load assessment data when API is ready
+      console.log('Ente dashboard initialized');
+    });
+  </script>
 </body>
 </html>
