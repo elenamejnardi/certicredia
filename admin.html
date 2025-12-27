@@ -77,14 +77,32 @@
                     Moduli Accreditamento
                 </div>
 
-                <a href="dashboard-organizations.html" class="nav-item w-full text-left px-4 py-3 rounded-lg hover:bg-slate-700 transition-colors block">
+                <button onclick="showSection('organizations')" class="nav-item w-full text-left px-4 py-3 rounded-lg hover:bg-slate-700 transition-colors" data-section="organizations">
                     <span class="flex items-center gap-3">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
                         </svg>
                         Organizzazioni
                     </span>
-                </a>
+                </button>
+
+                <button onclick="showSection('specialists')" class="nav-item w-full text-left px-4 py-3 rounded-lg hover:bg-slate-700 transition-colors" data-section="specialists">
+                    <span class="flex items-center gap-3">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
+                        </svg>
+                        Specialist
+                    </span>
+                </button>
+
+                <button onclick="showSection('assessments')" class="nav-item w-full text-left px-4 py-3 rounded-lg hover:bg-slate-700 transition-colors" data-section="assessments">
+                    <span class="flex items-center gap-3">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                        </svg>
+                        Assessments
+                    </span>
+                </button>
             </div>
         </aside>
 
@@ -301,6 +319,196 @@
                     </table>
                 </div>
             </section>
+
+            <!-- Organizations Section -->
+            <section id="section-organizations" class="section-content hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold">Gestione Organizzazioni</h2>
+                    <button onclick="openOrganizationModal()" class="bg-cyan-500 hover:bg-cyan-600 text-slate-900 font-bold py-2 px-4 rounded-lg transition-colors">
+                        <span class="flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                            </svg>
+                            Nuova Organizzazione
+                        </span>
+                    </button>
+                </div>
+
+                <!-- Filters -->
+                <div class="bg-slate-800 rounded-lg p-4 mb-6 border border-slate-700">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <input
+                            type="text"
+                            id="org-filter-name"
+                            placeholder="Cerca per nome..."
+                            class="bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500"
+                            oninput="filterOrganizations()"
+                        >
+                        <select
+                            id="org-filter-type"
+                            class="bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-cyan-500"
+                            onchange="filterOrganizations()"
+                        >
+                            <option value="">Tutti i tipi</option>
+                            <option value="PUBLIC_ENTITY">Ente Pubblico</option>
+                            <option value="PRIVATE_COMPANY">Azienda Privata</option>
+                            <option value="NON_PROFIT">No Profit</option>
+                        </select>
+                        <select
+                            id="org-filter-status"
+                            class="bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-cyan-500"
+                            onchange="filterOrganizations()"
+                        >
+                            <option value="">Tutti gli stati</option>
+                            <option value="pending">In attesa</option>
+                            <option value="active">Attivo</option>
+                            <option value="suspended">Sospeso</option>
+                            <option value="inactive">Inattivo</option>
+                        </select>
+                        <button
+                            onclick="resetOrganizationFilters()"
+                            class="bg-slate-700 hover:bg-slate-600 text-white py-2 px-4 rounded-lg transition-colors"
+                        >
+                            Reset Filtri
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Organizations Table -->
+                <div class="bg-slate-800 rounded-lg overflow-hidden border border-slate-700">
+                    <table class="w-full">
+                        <thead class="bg-slate-700">
+                            <tr>
+                                <th class="text-left p-4 font-semibold">Nome</th>
+                                <th class="text-left p-4 font-semibold">Tipo</th>
+                                <th class="text-left p-4 font-semibold">P.IVA</th>
+                                <th class="text-left p-4 font-semibold">Città</th>
+                                <th class="text-left p-4 font-semibold">Stato</th>
+                                <th class="text-left p-4 font-semibold">Creata</th>
+                                <th class="text-left p-4 font-semibold">Azioni</th>
+                            </tr>
+                        </thead>
+                        <tbody id="organizations-table-body">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Specialists Section -->
+            <section id="section-specialists" class="section-content hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold">Gestione Specialist</h2>
+                    <button onclick="openSpecialistModal()" class="bg-cyan-500 hover:bg-cyan-600 text-slate-900 font-bold py-2 px-4 rounded-lg transition-colors">
+                        <span class="flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                            </svg>
+                            Nuovo Specialist
+                        </span>
+                    </button>
+                </div>
+
+                <!-- Filters -->
+                <div class="bg-slate-800 rounded-lg p-4 mb-6 border border-slate-700">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <input
+                            type="text"
+                            id="spec-filter-name"
+                            placeholder="Cerca per nome o email..."
+                            class="bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500"
+                            oninput="filterSpecialists()"
+                        >
+                        <select
+                            id="spec-filter-status"
+                            class="bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-cyan-500"
+                            onchange="filterSpecialists()"
+                        >
+                            <option value="">Tutti gli stati</option>
+                            <option value="pending">Candidato</option>
+                            <option value="certified">Certificato</option>
+                            <option value="suspended">Sospeso</option>
+                            <option value="expired">Scaduto</option>
+                        </select>
+                        <button
+                            onclick="resetSpecialistFilters()"
+                            class="bg-slate-700 hover:bg-slate-600 text-white py-2 px-4 rounded-lg transition-colors"
+                        >
+                            Reset Filtri
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Specialists Table -->
+                <div class="bg-slate-800 rounded-lg overflow-hidden border border-slate-700">
+                    <table class="w-full">
+                        <thead class="bg-slate-700">
+                            <tr>
+                                <th class="text-left p-4 font-semibold">Nome</th>
+                                <th class="text-left p-4 font-semibold">Email</th>
+                                <th class="text-left p-4 font-semibold">Esperienza</th>
+                                <th class="text-left p-4 font-semibold">CPE</th>
+                                <th class="text-left p-4 font-semibold">Stato</th>
+                                <th class="text-left p-4 font-semibold">Certificato</th>
+                                <th class="text-left p-4 font-semibold">Azioni</th>
+                            </tr>
+                        </thead>
+                        <tbody id="specialists-table-body">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Assessments Section -->
+            <section id="section-assessments" class="section-content hidden">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold mb-2">Gestione Assessments</h2>
+                    <p class="text-slate-400">Dashboard assessments disponibile su dominio esterno</p>
+                </div>
+
+                <!-- Assessment Info Card -->
+                <div class="bg-slate-800 rounded-lg p-8 border border-slate-700 text-center">
+                    <div class="mb-6">
+                        <div class="w-20 h-20 bg-cyan-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-10 h-10 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Assessment Cybersecurity</h3>
+                        <p class="text-slate-400 mb-6">Il sistema di assessment è gestito su una piattaforma dedicata</p>
+                    </div>
+
+                    <a
+                        href="#"
+                        target="_blank"
+                        class="inline-flex items-center gap-2 bg-cyan-500 hover:bg-cyan-600 text-slate-900 font-bold py-3 px-6 rounded-lg transition-colors"
+                    >
+                        <span>Apri Dashboard Assessment</span>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                        </svg>
+                    </a>
+
+                    <!-- Assessment Stats Preview -->
+                    <div class="mt-8 pt-8 border-t border-slate-700">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div class="bg-slate-900 rounded-lg p-4">
+                                <p class="text-slate-400 text-sm mb-1">Assessments Totali</p>
+                                <p class="text-2xl font-bold text-cyan-400">--</p>
+                            </div>
+                            <div class="bg-slate-900 rounded-lg p-4">
+                                <p class="text-slate-400 text-sm mb-1">In Corso</p>
+                                <p class="text-2xl font-bold text-yellow-400">--</p>
+                            </div>
+                            <div class="bg-slate-900 rounded-lg p-4">
+                                <p class="text-slate-400 text-sm mb-1">Completati</p>
+                                <p class="text-2xl font-bold text-green-400">--</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </main>
     </div>
 
@@ -316,6 +524,161 @@
                 </button>
             </div>
             <div id="order-detail-content"></div>
+        </div>
+    </div>
+
+    <!-- Organization Modal -->
+    <div id="organization-modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+        <div class="bg-slate-800 rounded-xl p-8 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto border border-slate-700">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold" id="org-modal-title">Nuova Organizzazione</h2>
+                <button onclick="closeOrganizationModal()" class="text-slate-400 hover:text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <form id="organization-form" onsubmit="saveOrganization(event)">
+                <input type="hidden" id="org-id">
+                <div class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-400 mb-2">Nome Organizzazione *</label>
+                            <input type="text" id="org-name" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-cyan-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-400 mb-2">Tipo *</label>
+                            <select id="org-type" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-cyan-500">
+                                <option value="">Seleziona tipo</option>
+                                <option value="PUBLIC_ENTITY">Ente Pubblico</option>
+                                <option value="PRIVATE_COMPANY">Azienda Privata</option>
+                                <option value="NON_PROFIT">No Profit</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-400 mb-2">Email *</label>
+                            <input type="email" id="org-email" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-cyan-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-400 mb-2">Telefono</label>
+                            <input type="tel" id="org-phone" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-cyan-500">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-400 mb-2">P.IVA</label>
+                            <input type="text" id="org-vat" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-cyan-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-400 mb-2">Codice Fiscale</label>
+                            <input type="text" id="org-fiscal" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-cyan-500">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-400 mb-2">Indirizzo</label>
+                        <input type="text" id="org-address" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-cyan-500">
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-400 mb-2">Città</label>
+                            <input type="text" id="org-city" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-cyan-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-400 mb-2">Provincia</label>
+                            <input type="text" id="org-province" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-cyan-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-400 mb-2">CAP</label>
+                            <input type="text" id="org-postal" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-cyan-500">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-400 mb-2">Stato</label>
+                        <select id="org-status" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-cyan-500">
+                            <option value="pending">In attesa</option>
+                            <option value="active">Attivo</option>
+                            <option value="suspended">Sospeso</option>
+                            <option value="inactive">Inattivo</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="flex gap-4 mt-6">
+                    <button type="submit" class="flex-1 bg-cyan-500 hover:bg-cyan-600 text-slate-900 font-bold py-2 px-4 rounded-lg transition-colors">
+                        Salva
+                    </button>
+                    <button type="button" onclick="closeOrganizationModal()" class="flex-1 bg-slate-700 hover:bg-slate-600 text-white py-2 px-4 rounded-lg transition-colors">
+                        Annulla
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Specialist Modal -->
+    <div id="specialist-modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+        <div class="bg-slate-800 rounded-xl p-8 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto border border-slate-700">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold" id="spec-modal-title">Nuovo Specialist</h2>
+                <button onclick="closeSpecialistModal()" class="text-slate-400 hover:text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <form id="specialist-form" onsubmit="saveSpecialist(event)">
+                <input type="hidden" id="spec-id">
+                <div class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-400 mb-2">Nome *</label>
+                            <input type="text" id="spec-name" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-cyan-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-400 mb-2">Email *</label>
+                            <input type="email" id="spec-email" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-cyan-500">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-400 mb-2">Anni di Esperienza *</label>
+                            <input type="number" id="spec-experience" required min="0" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-cyan-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-400 mb-2">Stato</label>
+                            <select id="spec-status-input" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-cyan-500">
+                                <option value="pending">Candidato</option>
+                                <option value="certified">Certificato</option>
+                                <option value="suspended">Sospeso</option>
+                                <option value="expired">Scaduto</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-400 mb-2">Bio / Competenze</label>
+                        <textarea id="spec-bio" rows="3" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-cyan-500"></textarea>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-400 mb-2">CPE Totali</label>
+                            <input type="number" id="spec-cpe" min="0" step="0.5" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-cyan-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-400 mb-2">Data Certificazione</label>
+                            <input type="date" id="spec-cert-date" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-cyan-500">
+                        </div>
+                    </div>
+                </div>
+                <div class="flex gap-4 mt-6">
+                    <button type="submit" class="flex-1 bg-cyan-500 hover:bg-cyan-600 text-slate-900 font-bold py-2 px-4 rounded-lg transition-colors">
+                        Salva
+                    </button>
+                    <button type="button" onclick="closeSpecialistModal()" class="flex-1 bg-slate-700 hover:bg-slate-600 text-white py-2 px-4 rounded-lg transition-colors">
+                        Annulla
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 

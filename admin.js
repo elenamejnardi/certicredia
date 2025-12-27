@@ -155,6 +155,15 @@ function showSection(sectionName) {
         case 'contacts':
             loadContacts();
             break;
+        case 'organizations':
+            loadOrganizations();
+            break;
+        case 'specialists':
+            loadSpecialists();
+            break;
+        case 'assessments':
+            // No data to load for assessments placeholder
+            break;
         case 'dashboard':
             loadDashboard();
             break;
@@ -750,4 +759,408 @@ function getContactStatusTextColor(status) {
         'closed': 'text-slate-400'
     };
     return colors[status] || 'text-slate-400';
+}
+
+// ========== ORGANIZATIONS MANAGEMENT ==========
+
+let allOrganizations = [];
+
+async function loadOrganizations() {
+    try {
+        const response = await fetch(`${API_BASE}/api/organizations`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        const data = await response.json();
+
+        if (data.success) {
+            allOrganizations = data.data;
+            displayOrganizations(allOrganizations);
+        } else {
+            notify(data.message || 'Errore caricamento organizzazioni', 'error');
+        }
+    } catch (error) {
+        console.error('Load organizations error:', error);
+        notify('Errore caricamento organizzazioni', 'error');
+    }
+}
+
+function displayOrganizations(organizations) {
+    const tbody = document.getElementById('organizations-table-body');
+
+    if (!organizations || organizations.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="text-center p-8 text-slate-400">Nessuna organizzazione trovata</td></tr>';
+        return;
+    }
+
+    tbody.innerHTML = organizations.map(org => `
+        <tr class="border-t border-slate-700 hover:bg-slate-700/50">
+            <td class="p-4">${org.name || '-'}</td>
+            <td class="p-4">${getOrgTypeBadge(org.organization_type)}</td>
+            <td class="p-4">${org.vat_number || '-'}</td>
+            <td class="p-4">${org.city || '-'}</td>
+            <td class="p-4">${getOrgStatusBadge(org.status)}</td>
+            <td class="p-4 text-sm text-slate-400">${formatDate(org.created_at)}</td>
+            <td class="p-4">
+                <div class="flex gap-2">
+                    <button onclick="editOrganization(${org.id})" class="text-cyan-400 hover:text-cyan-300">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                        </svg>
+                    </button>
+                    <button onclick="deleteOrganization(${org.id})" class="text-red-400 hover:text-red-300">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </td>
+        </tr>
+    `).join('');
+}
+
+function filterOrganizations() {
+    const nameFilter = document.getElementById('org-filter-name').value.toLowerCase();
+    const typeFilter = document.getElementById('org-filter-type').value;
+    const statusFilter = document.getElementById('org-filter-status').value;
+
+    const filtered = allOrganizations.filter(org => {
+        const matchName = !nameFilter || org.name.toLowerCase().includes(nameFilter);
+        const matchType = !typeFilter || org.organization_type === typeFilter;
+        const matchStatus = !statusFilter || org.status === statusFilter;
+        return matchName && matchType && matchStatus;
+    });
+
+    displayOrganizations(filtered);
+}
+
+function resetOrganizationFilters() {
+    document.getElementById('org-filter-name').value = '';
+    document.getElementById('org-filter-type').value = '';
+    document.getElementById('org-filter-status').value = '';
+    displayOrganizations(allOrganizations);
+}
+
+function openOrganizationModal(org = null) {
+    const modal = document.getElementById('organization-modal');
+    const form = document.getElementById('organization-form');
+    const title = document.getElementById('org-modal-title');
+
+    form.reset();
+
+    if (org) {
+        title.textContent = 'Modifica Organizzazione';
+        document.getElementById('org-id').value = org.id;
+        document.getElementById('org-name').value = org.name || '';
+        document.getElementById('org-type').value = org.organization_type || '';
+        document.getElementById('org-email').value = org.email || '';
+        document.getElementById('org-phone').value = org.phone || '';
+        document.getElementById('org-vat').value = org.vat_number || '';
+        document.getElementById('org-fiscal').value = org.fiscal_code || '';
+        document.getElementById('org-address').value = org.address || '';
+        document.getElementById('org-city').value = org.city || '';
+        document.getElementById('org-province').value = org.province || '';
+        document.getElementById('org-postal').value = org.postal_code || '';
+        document.getElementById('org-status').value = org.status || 'pending';
+    } else {
+        title.textContent = 'Nuova Organizzazione';
+        document.getElementById('org-id').value = '';
+    }
+
+    modal.classList.remove('hidden');
+}
+
+function closeOrganizationModal() {
+    document.getElementById('organization-modal').classList.add('hidden');
+}
+
+async function editOrganization(id) {
+    const org = allOrganizations.find(o => o.id === id);
+    if (org) {
+        openOrganizationModal(org);
+    }
+}
+
+async function deleteOrganization(id) {
+    if (!confirm('Sei sicuro di voler eliminare questa organizzazione?')) return;
+
+    try {
+        const response = await fetch(`${API_BASE}/api/organizations/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            notify('Organizzazione eliminata con successo', 'success');
+            loadOrganizations();
+        } else {
+            notify(data.message || 'Errore eliminazione organizzazione', 'error');
+        }
+    } catch (error) {
+        console.error('Delete organization error:', error);
+        notify('Errore eliminazione organizzazione', 'error');
+    }
+}
+
+async function saveOrganization(event) {
+    event.preventDefault();
+
+    const id = document.getElementById('org-id').value;
+    const orgData = {
+        name: document.getElementById('org-name').value,
+        organizationType: document.getElementById('org-type').value,
+        email: document.getElementById('org-email').value,
+        phone: document.getElementById('org-phone').value || null,
+        vatNumber: document.getElementById('org-vat').value || null,
+        fiscalCode: document.getElementById('org-fiscal').value || null,
+        address: document.getElementById('org-address').value || null,
+        city: document.getElementById('org-city').value || null,
+        province: document.getElementById('org-province').value || null,
+        postalCode: document.getElementById('org-postal').value || null,
+        status: document.getElementById('org-status').value
+    };
+
+    try {
+        const url = id ? `${API_BASE}/api/organizations/${id}` : `${API_BASE}/api/organizations`;
+        const method = id ? 'PUT' : 'POST';
+
+        const response = await fetch(url, {
+            method: method,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(orgData)
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            notify(id ? 'Organizzazione aggiornata con successo' : 'Organizzazione creata con successo', 'success');
+            closeOrganizationModal();
+            loadOrganizations();
+        } else {
+            notify(data.message || 'Errore salvataggio organizzazione', 'error');
+        }
+    } catch (error) {
+        console.error('Save organization error:', error);
+        notify('Errore salvataggio organizzazione', 'error');
+    }
+}
+
+function getOrgTypeBadge(type) {
+    const badges = {
+        'PUBLIC_ENTITY': '<span class="px-2 py-1 rounded-full text-xs font-semibold bg-green-500/20 text-green-400">Ente Pubblico</span>',
+        'PRIVATE_COMPANY': '<span class="px-2 py-1 rounded-full text-xs font-semibold bg-blue-500/20 text-blue-400">Azienda Privata</span>',
+        'NON_PROFIT': '<span class="px-2 py-1 rounded-full text-xs font-semibold bg-purple-500/20 text-purple-400">No Profit</span>'
+    };
+    return badges[type] || '<span class="px-2 py-1 rounded-full text-xs font-semibold bg-slate-500/20 text-slate-400">N/D</span>';
+}
+
+function getOrgStatusBadge(status) {
+    const badges = {
+        'pending': '<span class="px-2 py-1 rounded-full text-xs font-semibold bg-yellow-500/20 text-yellow-400">In attesa</span>',
+        'active': '<span class="px-2 py-1 rounded-full text-xs font-semibold bg-green-500/20 text-green-400">Attivo</span>',
+        'suspended': '<span class="px-2 py-1 rounded-full text-xs font-semibold bg-red-500/20 text-red-400">Sospeso</span>',
+        'inactive': '<span class="px-2 py-1 rounded-full text-xs font-semibold bg-slate-500/20 text-slate-400">Inattivo</span>'
+    };
+    return badges[status] || '<span class="px-2 py-1 rounded-full text-xs font-semibold bg-slate-500/20 text-slate-400">N/D</span>';
+}
+
+// ========== SPECIALISTS MANAGEMENT ==========
+
+let allSpecialists = [];
+
+async function loadSpecialists() {
+    try {
+        const response = await fetch(`${API_BASE}/api/specialists`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        const data = await response.json();
+
+        if (data.success) {
+            allSpecialists = data.data;
+            displaySpecialists(allSpecialists);
+        } else {
+            notify(data.message || 'Errore caricamento specialist', 'error');
+        }
+    } catch (error) {
+        console.error('Load specialists error:', error);
+        notify('Errore caricamento specialist', 'error');
+    }
+}
+
+function displaySpecialists(specialists) {
+    const tbody = document.getElementById('specialists-table-body');
+
+    if (!specialists || specialists.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="text-center p-8 text-slate-400">Nessuno specialist trovato</td></tr>';
+        return;
+    }
+
+    tbody.innerHTML = specialists.map(spec => `
+        <tr class="border-t border-slate-700 hover:bg-slate-700/50">
+            <td class="p-4">${spec.name || spec.user_name || '-'}</td>
+            <td class="p-4 text-sm">${spec.email || spec.user_email || '-'}</td>
+            <td class="p-4">${spec.experience_years || 0} anni</td>
+            <td class="p-4">${spec.total_cpe_credits || 0}</td>
+            <td class="p-4">${getSpecStatusBadge(spec.certification_status)}</td>
+            <td class="p-4 text-sm text-slate-400">${spec.certification_date ? formatDate(spec.certification_date) : '-'}</td>
+            <td class="p-4">
+                <div class="flex gap-2">
+                    <button onclick="editSpecialist(${spec.id})" class="text-cyan-400 hover:text-cyan-300">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                        </svg>
+                    </button>
+                    <button onclick="deleteSpecialist(${spec.id})" class="text-red-400 hover:text-red-300">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </td>
+        </tr>
+    `).join('');
+}
+
+function filterSpecialists() {
+    const nameFilter = document.getElementById('spec-filter-name').value.toLowerCase();
+    const statusFilter = document.getElementById('spec-filter-status').value;
+
+    const filtered = allSpecialists.filter(spec => {
+        const name = spec.name || spec.user_name || '';
+        const email = spec.email || spec.user_email || '';
+        const matchName = !nameFilter || name.toLowerCase().includes(nameFilter) || email.toLowerCase().includes(nameFilter);
+        const matchStatus = !statusFilter || spec.certification_status === statusFilter;
+        return matchName && matchStatus;
+    });
+
+    displaySpecialists(filtered);
+}
+
+function resetSpecialistFilters() {
+    document.getElementById('spec-filter-name').value = '';
+    document.getElementById('spec-filter-status').value = '';
+    displaySpecialists(allSpecialists);
+}
+
+function openSpecialistModal(spec = null) {
+    const modal = document.getElementById('specialist-modal');
+    const form = document.getElementById('specialist-form');
+    const title = document.getElementById('spec-modal-title');
+
+    form.reset();
+
+    if (spec) {
+        title.textContent = 'Modifica Specialist';
+        document.getElementById('spec-id').value = spec.id;
+        document.getElementById('spec-name').value = spec.name || spec.user_name || '';
+        document.getElementById('spec-email').value = spec.email || spec.user_email || '';
+        document.getElementById('spec-experience').value = spec.experience_years || 0;
+        document.getElementById('spec-status-input').value = spec.certification_status || 'pending';
+        document.getElementById('spec-bio').value = spec.bio || '';
+        document.getElementById('spec-cpe').value = spec.total_cpe_credits || 0;
+        document.getElementById('spec-cert-date').value = spec.certification_date ? spec.certification_date.split('T')[0] : '';
+    } else {
+        title.textContent = 'Nuovo Specialist';
+        document.getElementById('spec-id').value = '';
+    }
+
+    modal.classList.remove('hidden');
+}
+
+function closeSpecialistModal() {
+    document.getElementById('specialist-modal').classList.add('hidden');
+}
+
+async function editSpecialist(id) {
+    const spec = allSpecialists.find(s => s.id === id);
+    if (spec) {
+        openSpecialistModal(spec);
+    }
+}
+
+async function deleteSpecialist(id) {
+    if (!confirm('Sei sicuro di voler eliminare questo specialist?')) return;
+
+    try {
+        const response = await fetch(`${API_BASE}/api/specialists/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            notify('Specialist eliminato con successo', 'success');
+            loadSpecialists();
+        } else {
+            notify(data.message || 'Errore eliminazione specialist', 'error');
+        }
+    } catch (error) {
+        console.error('Delete specialist error:', error);
+        notify('Errore eliminazione specialist', 'error');
+    }
+}
+
+async function saveSpecialist(event) {
+    event.preventDefault();
+
+    const id = document.getElementById('spec-id').value;
+    const specData = {
+        name: document.getElementById('spec-name').value,
+        email: document.getElementById('spec-email').value,
+        experienceYears: parseInt(document.getElementById('spec-experience').value),
+        certificationStatus: document.getElementById('spec-status-input').value,
+        bio: document.getElementById('spec-bio').value || null,
+        totalCpeCredits: parseFloat(document.getElementById('spec-cpe').value) || 0,
+        certificationDate: document.getElementById('spec-cert-date').value || null
+    };
+
+    try {
+        const url = id ? `${API_BASE}/api/specialists/${id}` : `${API_BASE}/api/specialists`;
+        const method = id ? 'PUT' : 'POST';
+
+        const response = await fetch(url, {
+            method: method,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(specData)
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            notify(id ? 'Specialist aggiornato con successo' : 'Specialist creato con successo', 'success');
+            closeSpecialistModal();
+            loadSpecialists();
+        } else {
+            notify(data.message || 'Errore salvataggio specialist', 'error');
+        }
+    } catch (error) {
+        console.error('Save specialist error:', error);
+        notify('Errore salvataggio specialist', 'error');
+    }
+}
+
+function getSpecStatusBadge(status) {
+    const badges = {
+        'pending': '<span class="px-2 py-1 rounded-full text-xs font-semibold bg-yellow-500/20 text-yellow-400">Candidato</span>',
+        'certified': '<span class="px-2 py-1 rounded-full text-xs font-semibold bg-green-500/20 text-green-400">Certificato</span>',
+        'suspended': '<span class="px-2 py-1 rounded-full text-xs font-semibold bg-red-500/20 text-red-400">Sospeso</span>',
+        'expired': '<span class="px-2 py-1 rounded-full text-xs font-semibold bg-slate-500/20 text-slate-400">Scaduto</span>'
+    };
+    return badges[status] || '<span class="px-2 py-1 rounded-full text-xs font-semibold bg-slate-500/20 text-slate-400">N/D</span>';
 }
