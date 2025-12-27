@@ -130,9 +130,51 @@ export const getAllTemplates = async () => {
   }
 };
 
+/**
+ * Get template by ID
+ */
+export const getTemplateById = async (templateId) => {
+  try {
+    const result = await pool.query(
+      'SELECT * FROM assessment_templates WHERE id = $1',
+      [templateId]
+    );
+
+    if (result.rows.length === 0) {
+      return null;
+    }
+
+    return result.rows[0];
+
+  } catch (error) {
+    logger.error('Error getting template by ID:', error);
+    throw error;
+  }
+};
+
+/**
+ * Get templates by type
+ */
+export const getTemplatesByType = async (type) => {
+  try {
+    const result = await pool.query(
+      'SELECT * FROM assessment_templates WHERE type = $1 ORDER BY created_at DESC',
+      [type]
+    );
+
+    return result.rows;
+
+  } catch (error) {
+    logger.error('Error getting templates by type:', error);
+    throw error;
+  }
+};
+
 export default {
   createTemplate,
   activateTemplate,
   getActiveTemplate,
-  getAllTemplates
+  getAllTemplates,
+  getTemplateById,
+  getTemplatesByType
 };
