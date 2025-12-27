@@ -251,8 +251,6 @@
 
   <script src="/public/js/dashboard-common.js"></script>
   <script>
-    const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:3000' : '';
-    let token = localStorage.getItem('token');
     let organizations = [];
     let filteredOrganizations = [];
 
@@ -290,9 +288,9 @@
     async function loadDashboardStats() {
       try {
         const [orgs, specs, assess] = await Promise.all([
-          fetch(`${API_BASE}/api/organizations`, { headers: { 'Authorization': `Bearer ${token}` } }).then(r => r.json()),
-          fetch(`${API_BASE}/api/specialists`, { headers: { 'Authorization': `Bearer ${token}` } }).then(r => r.json()),
-          fetch(`${API_BASE}/api/assessments`, { headers: { 'Authorization': `Bearer ${token}` } }).then(r => r.json())
+          fetch(`${API_BASE}/api/organizations`, { headers: { 'Authorization': `Bearer ${getAuthToken()}` } }).then(r => r.json()),
+          fetch(`${API_BASE}/api/specialists`, { headers: { 'Authorization': `Bearer ${getAuthToken()}` } }).then(r => r.json()),
+          fetch(`${API_BASE}/api/assessments`, { headers: { 'Authorization': `Bearer ${getAuthToken()}` } }).then(r => r.json())
         ]);
 
         document.getElementById('stat-organizations').textContent = orgs.data?.length || 0;
@@ -308,7 +306,7 @@
     async function loadOrganizations() {
       try {
         const response = await fetch(`${API_BASE}/api/organizations`, {
-          headers: { 'Authorization': `Bearer ${token}` }
+          headers: { 'Authorization': `Bearer ${getAuthToken()}` }
         });
         const data = await response.json();
         organizations = data.data || [];
@@ -403,7 +401,7 @@
         const response = await fetch(`${API_BASE}/api/organizations${id ? '/' + id : ''}`, {
           method: id ? 'PUT' : 'POST',
           headers: {
-            'Authorization': `Bearer ${token}`,
+            'Authorization': `Bearer ${getAuthToken()}`,
             'Content-Type': 'application/json'
           },
           body: JSON.stringify(payload)
@@ -433,7 +431,7 @@
       try {
         const response = await fetch(`${API_BASE}/api/organizations/${id}`, {
           method: 'DELETE',
-          headers: { 'Authorization': `Bearer ${token}` }
+          headers: { 'Authorization': `Bearer ${getAuthToken()}` }
         });
 
         if (response.ok) {
