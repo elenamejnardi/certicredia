@@ -99,8 +99,91 @@ export const resolveComment = async (commentId, resolutionNote, resolvedBy) => {
   }
 };
 
+/**
+ * Get review comments with filters
+ */
+export const getReviewComments = async (filters = {}) => {
+  try {
+    let query = `
+      SELECT
+        rc.*,
+        u.name as specialist_name, u.email as specialist_email
+      FROM review_comments rc
+      LEFT JOIN users u ON rc.user_id = u.id
+      WHERE 1=1
+    `;
+
+    const params = [];
+    let paramCount = 1;
+
+    if (filters.assessmentId) {
+      query += ` AND rc.assessment_id = $${paramCount++}`;
+      params.push(filters.assessmentId);
+    }
+
+    if (filters.section) {
+      query += ` AND rc.section = $${paramCount++}`;
+      params.push(filters.section);
+    }
+
+    if (filters.resolved !== undefined) {
+      query += ` AND rc.resolved = $${paramCount++}`;
+      params.push(filters.resolved);
+    }
+
+    query += ` ORDER BY rc.created_at DESC`;
+
+    const result = await pool.query(query, params);
+
+    return result.rows;
+
+  } catch (error) {
+    logger.error('Error getting review comments:', error);
+    throw error;
+  }
+};
+
+/**
+ * Resolve review comment
+ */
+export const resolveReviewComment = async (commentId, resolvedBy, resolution) => {
+  try {
+    await pool.query(
+      `UPDATE review_comments
+       SET resolved = true,
+           resolved_at = CURRENT_TIMESTAMP,
+           resolved_by = $1,
+           resolution = $2
+       WHERE id = $3`,
+      [resolvedBy, resolution, commentId]
+    );
+
+    logger.info(`✅ Review comment #${commentId} resolved by user #${resolvedBy}`);
+
+    await auditLog({
+      userId: resolvedBy,
+      action: 'REVIEW_COMMENT_RESOLVED',
+      entityType: 'review_comment',
+      entityId: commentId,
+      newValue: { resolved: true, resolution }
+    });
+
+    return { success: true };
+
+  } catch (error) {
+    logger.error('Error resolving review comment:', error);
+    throw error;
+  }
+};
+
+// Alias for compatibility
+export const addReviewComment = addComment;
+
 export default {
   addComment,
+  addReviewComment,
   getAssessmentComments,
-  resolveComment
+  getReviewComments,
+  resolveComment,
+  resolveReviewComment
 };
