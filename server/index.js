@@ -14,6 +14,16 @@ import orderRoutes from './routes/orders.js';
 import { pool } from './config/database.js';
 import logger from './utils/logger.js';
 
+// Accreditation modules routes
+import mfaRoutes from '../modules/auth/routes/mfaRoutes.js';
+import passwordRoutes from '../modules/auth/routes/passwordRoutes.js';
+import organizationRoutes from '../modules/organizations/routes/organizationRoutes.js';
+import specialistRoutes from '../modules/specialists/routes/specialistRoutes.js';
+import assessmentRoutes from '../modules/assessments/routes/assessmentRoutes.js';
+import evidenceRoutes from '../modules/evidence/routes/evidenceRoutes.js';
+import workflowRoutes from '../modules/workflow/routes/workflowRoutes.js';
+import reportRoutes from '../modules/reports/routes/reportRoutes.js';
+
 // Load environment variables
 dotenv.config();
 
@@ -61,12 +71,22 @@ app.use(express.urlencoded({ extended: true }));
 // Serve static files (frontend)
 app.use(express.static(path.join(__dirname, '..')));
 
-// API Routes
+// API Routes - Ecommerce
 app.use('/api/contact', contactRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);
+
+// API Routes - Accreditation Modules
+app.use('/api/auth/mfa', mfaRoutes);
+app.use('/api/auth', passwordRoutes);
+app.use('/api/organizations', organizationRoutes);
+app.use('/api/specialists', specialistRoutes);
+app.use('/api/assessments', assessmentRoutes);
+app.use('/api/evidence', evidenceRoutes);
+app.use('/api/workflow', workflowRoutes);
+app.use('/api/reports', reportRoutes);
 
 // Health check endpoint
 app.get('/api/health', async (req, res) => {
