@@ -16,7 +16,7 @@
   const AuthGuard = {
     // Percorsi pubblici (non richiedono autenticazione)
     publicPaths: [
-      '/public/app.html',
+      '/public/pages/app-landing.html',
       '/public/pages/login.html',
       '/public/pages/register.html',
       '/public/pages/forgot-password.html'
@@ -89,7 +89,7 @@
       }
 
       const role = user.role;
-      let targetPath = '/public/app.html';
+      let targetPath = '/public/pages/app-landing.html';
 
       // Determina dashboard corretta in base al ruolo
       switch (role) {
