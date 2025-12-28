@@ -152,20 +152,35 @@ async function seedSpecialistAssignments() {
 
       // Create or update specialist profile
       const existingSpec = await client.query(
-        'SELECT id FROM specialists WHERE user_id = $1',
+        'SELECT id FROM specialist_profiles WHERE user_id = $1',
         [userId]
       );
 
       if (existingSpec.rows.length > 0) {
         await client.query(
-          `UPDATE specialists SET experience_years = $1, bio = $2, certification_status = 'certified', total_cpe_credits = $3
+          `UPDATE specialist_profiles
+           SET experience_years = $1,
+               bio = $2,
+               status = 'active',
+               exam_passed = true,
+               exam_score = 95.00,
+               cpe_hours_current_year = $3
            WHERE user_id = $4`,
           [spec.experience, spec.bio, spec.experience * 10, userId]
         );
       } else {
         await client.query(
-          `INSERT INTO specialists (user_id, experience_years, bio, certification_status, total_cpe_credits)
-           VALUES ($1, $2, $3, 'certified', $4)`,
+          `INSERT INTO specialist_profiles (
+            user_id,
+            experience_years,
+            bio,
+            status,
+            exam_passed,
+            exam_score,
+            exam_passed_at,
+            cpe_hours_current_year
+          )
+          VALUES ($1, $2, $3, 'active', true, 95.00, CURRENT_TIMESTAMP, $4)`,
           [userId, spec.experience, spec.bio, spec.experience * 10]
         );
       }
