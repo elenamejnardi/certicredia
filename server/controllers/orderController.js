@@ -159,7 +159,7 @@ export const getUserOrders = async (req, res) => {
     }
 
     const result = await pool.query(
-      `SELECT id, order_number, status, total_amount, currency,
+      `SELECT id, order_number, status, total_amount,
               payment_method, payment_status, created_at
        FROM orders
        WHERE user_id = $1
