@@ -237,8 +237,24 @@ export const getOrderById = async (req, res) => {
  */
 export const getAllOrders = async (req, res) => {
   try {
-    const { status, limit = 50, offset = 0 } = req.query;
+    const { status } = req.query;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+    const offset = (page - 1) * limit;
 
+    // Build count query
+    let countQuery = 'SELECT COUNT(*) FROM orders WHERE 1=1';
+    const countParams = [];
+    if (status) {
+      countQuery += ' AND status = $1';
+      countParams.push(status);
+    }
+
+    // Get total count
+    const countResult = await pool.query(countQuery, countParams);
+    const total = parseInt(countResult.rows[0].count);
+
+    // Build data query
     let query = 'SELECT * FROM orders WHERE 1=1';
     const params = [];
     let paramIndex = 1;
@@ -256,8 +272,13 @@ export const getAllOrders = async (req, res) => {
 
     res.json({
       success: true,
-      count: result.rows.length,
-      data: result.rows
+      data: result.rows,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit)
+      }
     });
 
   } catch (error) {

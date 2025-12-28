@@ -673,15 +673,32 @@ export const resetPassword = async (req, res) => {
  */
 export const getAllUsers = async (req, res) => {
   try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+    const offset = (page - 1) * limit;
+
+    // Get total count
+    const countResult = await pool.query('SELECT COUNT(*) FROM users');
+    const total = parseInt(countResult.rows[0].count);
+
+    // Get paginated results
     const result = await pool.query(
       `SELECT id, email, name, role, company, phone, created_at, last_login, active, email_verified
        FROM users
-       ORDER BY created_at DESC`
+       ORDER BY created_at DESC
+       LIMIT $1 OFFSET $2`,
+      [limit, offset]
     );
 
     res.json({
       success: true,
-      data: result.rows
+      data: result.rows,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit)
+      }
     });
 
   } catch (error) {
