@@ -76,7 +76,7 @@ async function logout() {
     localStorage.removeItem('currentUser');
     localStorage.removeItem('refreshToken');
 
-    window.location.href = '/public/pages/app-landing.html';
+    window.location.href = '/public/pages/login.html';
 }
 
 // Dashboard

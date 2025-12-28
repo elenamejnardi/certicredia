@@ -300,10 +300,10 @@
             window.location.href = '/public/pages/ente/dashboard.html';
             break;
           default:
-            window.location.href = '/public/pages/app-landing.html';
+            window.location.href = '/public/pages/login.html';
         }
       } else {
-        window.location.href = '/public/pages/app-landing.html';
+        window.location.href = '/public/pages/login.html';
       }
     });
 
@@ -313,7 +313,8 @@
       localStorage.removeItem('token');
       localStorage.removeItem('currentUser');
       localStorage.removeItem('user');
-      window.location.href = '/public/pages/app-landing.html';
+      localStorage.removeItem('refreshToken');
+      window.location.href = '/public/pages/login.html';
     });
 
     // Cancel button
