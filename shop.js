@@ -202,11 +202,19 @@ async function initDashboard() {
         const userName = document.getElementById('user-name');
         if (userName) userName.textContent = user.data.name || user.data.email;
 
-        document.getElementById('total-orders').textContent = orders.count || 0;
+        // Calculate stats
+        const totalOrders = orders.count || 0;
+        const totalSpent = orders.data.reduce((sum, o) => sum + parseFloat(o.total_amount || 0), 0);
+        const avgOrder = totalOrders > 0 ? totalSpent / totalOrders : 0;
+
+        document.getElementById('total-orders').textContent = totalOrders;
+        if (document.getElementById('total-spent')) document.getElementById('total-spent').textContent = price(totalSpent);
+        if (document.getElementById('avg-order')) document.getElementById('avg-order').textContent = price(avgOrder);
+
         const ol = document.getElementById('orders-list');
         if (orders.count === 0) { ol.classList.add('hidden'); document.getElementById('no-orders')?.classList.remove('hidden'); }
         else {
-            ol.innerHTML = orders.data.map(o => `<div class="bg-slate-700 rounded-lg p-4 flex justify-between"><div><div class="font-bold">${o.order_number}</div><div class="text-sm text-slate-400">${new Date(o.created_at).toLocaleDateString('it-IT')}</div></div><div class="text-right"><div class="font-bold text-cyan-400">${price(o.total_amount)}</div></div></div>`).join('');
+            ol.innerHTML = orders.data.map(o => `<div class="bg-slate-700 rounded-lg p-4 flex justify-between"><div><div class="font-bold">${o.order_number}</div><div class="text-sm text-slate-400">${new Date(o.created_at).toLocaleDateString('it-IT')}</div></div><div class="text-right"><div class="font-bold text-cyan-400">${price(o.total_amount)}</div><div class="text-xs text-slate-400 capitalize">${o.status}</div></div></div>`).join('');
         }
 
         // Update profile info
