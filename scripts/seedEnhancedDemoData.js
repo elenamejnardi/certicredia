@@ -159,8 +159,8 @@ async function seedEnhancedDemoData() {
     const productIds = [];
     for (const product of productsData) {
       const result = await client.query(
-        `INSERT INTO products (name, slug, description, price, category, duration, active)
-         VALUES ($1, $2, $3, $4, $5, $6, true)
+        `INSERT INTO products (name, slug, description, price, category, active)
+         VALUES ($1, $2, $3, $4, $5, true)
          ON CONFLICT (slug) DO UPDATE SET price = EXCLUDED.price
          RETURNING id`,
         [
@@ -168,8 +168,7 @@ async function seedEnhancedDemoData() {
           product.slug,
           `Certificazione professionale ${product.name}. Corso completo con esame finale.`,
           product.price,
-          product.category,
-          product.duration
+          product.category
         ]
       );
       productIds.push(result.rows[0].id);
