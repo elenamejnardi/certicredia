@@ -69,9 +69,14 @@ async function logout() {
         console.error('Logout error:', error);
     }
 
+    // Clear all possible token/user storage keys
     localStorage.removeItem('token');
+    localStorage.removeItem('authToken');
     localStorage.removeItem('user');
-    window.location.href = '/';
+    localStorage.removeItem('currentUser');
+    localStorage.removeItem('refreshToken');
+
+    window.location.href = '/public/pages/app-landing.html';
 }
 
 // Dashboard
