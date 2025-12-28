@@ -45,7 +45,7 @@ export const createOrder = async (req, res) => {
     // Get cart items
     const cartResult = await client.query(
       `SELECT c.*, p.name, p.price, p.slug
-       FROM cart c
+       FROM cart_items c
        JOIN products p ON c.product_id = p.id
        WHERE c.user_id = $1 AND p.active = true`,
       [req.user.id]
@@ -109,7 +109,7 @@ export const createOrder = async (req, res) => {
 
     // Clear cart
     await client.query(
-      'DELETE FROM cart WHERE user_id = $1',
+      'DELETE FROM cart_items WHERE user_id = $1',
       [req.user.id]
     );
 
