@@ -9,14 +9,23 @@ const API_BASE = window.location.origin + '/api';
  * Get auth token from localStorage
  */
 function getAuthToken() {
-  return localStorage.getItem('token');
+  // Try both 'token' and 'authToken' keys for compatibility
+  let token = localStorage.getItem('token');
+  if (!token) {
+    token = localStorage.getItem('authToken');
+  }
+  return token;
 }
 
 /**
  * Get current user from localStorage
  */
 function getCurrentUser() {
-  const userStr = localStorage.getItem('user');
+  // Try both 'user' and 'currentUser' keys for compatibility
+  let userStr = localStorage.getItem('user');
+  if (!userStr) {
+    userStr = localStorage.getItem('currentUser');
+  }
   return userStr ? JSON.parse(userStr) : null;
 }
 
