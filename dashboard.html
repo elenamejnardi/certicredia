@@ -61,8 +61,28 @@
         </div>
 
         <div class="bg-slate-800 rounded-xl p-6">
-            <h2 class="text-2xl font-bold mb-6">Profilo</h2>
-            <div id="profile-info"></div>
+            <h2 class="text-2xl font-bold mb-6 flex justify-between items-center">
+                Il Mio Profilo
+                <a href="/public/pages/profile.html" class="text-sm text-cyan-400 hover:text-cyan-300">Modifica →</a>
+            </h2>
+            <div id="profile-info" class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <p class="text-sm text-slate-400 mb-1">Email</p>
+                    <p id="user-email" class="font-medium">-</p>
+                </div>
+                <div>
+                    <p class="text-sm text-slate-400 mb-1">Telefono</p>
+                    <p id="user-phone" class="font-medium">-</p>
+                </div>
+                <div>
+                    <p class="text-sm text-slate-400 mb-1">Azienda</p>
+                    <p id="user-company" class="font-medium">-</p>
+                </div>
+                <div>
+                    <p class="text-sm text-slate-400 mb-1">Indirizzo</p>
+                    <p id="user-address" class="font-medium text-sm">-</p>
+                </div>
+            </div>
         </div>
     </main>
 

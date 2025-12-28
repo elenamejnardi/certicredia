@@ -208,7 +208,13 @@ async function initDashboard() {
         else {
             ol.innerHTML = orders.data.map(o => `<div class="bg-slate-700 rounded-lg p-4 flex justify-between"><div><div class="font-bold">${o.order_number}</div><div class="text-sm text-slate-400">${new Date(o.created_at).toLocaleDateString('it-IT')}</div></div><div class="text-right"><div class="font-bold text-cyan-400">${price(o.total_amount)}</div></div></div>`).join('');
         }
-        document.getElementById('profile-info').innerHTML = `<div class="space-y-3 text-sm"><div>Nome: ${user.data.name}</div><div>Email: ${user.data.email}</div></div>`;
+
+        // Update profile info
+        document.getElementById('user-email').textContent = user.data.email || '-';
+        document.getElementById('user-phone').textContent = user.data.phone || '-';
+        document.getElementById('user-company').textContent = user.data.company || '-';
+        const address = [user.data.address, user.data.city, user.data.postal_code].filter(Boolean).join(', ');
+        document.getElementById('user-address').textContent = address || '-';
     } catch (e) { notify(e.message, 'error'); }
 }
 
