@@ -522,7 +522,7 @@ async function seedEnhancedDemoData() {
 
       await client.query(
         `INSERT INTO specialist_assignments (
-          assessment_id, organization_id, specialist_id, status, access_token, token_hash, assigned_by, expires_at
+          assessment_id, organization_id, specialist_id, status, access_token, token_hash, created_by, expires_at
         ) VALUES ($1, $2, $3, $4, $5, $6, $7, NOW() + INTERVAL '30 days')
         ON CONFLICT DO NOTHING`,
         [
