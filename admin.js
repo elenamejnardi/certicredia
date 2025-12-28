@@ -259,31 +259,9 @@ async function loadProducts() {
 
         const data = await response.json();
         state.products = data.data || [];
+        allProducts = data.data || [];
 
-        const tbody = document.getElementById('products-table-body');
-        tbody.innerHTML = state.products.map(product => `
-            <tr class="border-t border-slate-700 hover:bg-slate-750">
-                <td class="p-4">
-                    <div>
-                        <p class="font-medium">${product.name}</p>
-                        <p class="text-sm text-slate-400">${product.slug}</p>
-                    </div>
-                </td>
-                <td class="p-4 text-slate-300">${product.category || '-'}</td>
-                <td class="p-4 font-medium">€${parseFloat(product.price).toFixed(2)}</td>
-                <td class="p-4">
-                    <span class="px-3 py-1 rounded-full text-xs ${product.active ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}">
-                        ${product.active ? 'Attivo' : 'Inattivo'}
-                    </span>
-                </td>
-                <td class="p-4 text-right">
-                    <button onclick="editProduct(${product.id})" class="text-cyan-400 hover:text-cyan-300 mr-3">Modifica</button>
-                    <button onclick="toggleProductStatus(${product.id}, ${!product.active})" class="text-${product.active ? 'red' : 'green'}-400 hover:text-${product.active ? 'red' : 'green'}-300">
-                        ${product.active ? 'Disattiva' : 'Attiva'}
-                    </button>
-                </td>
-            </tr>
-        `).join('');
+        displayProducts(allProducts);
 
         // Render pagination controls if pagination data is available
         if (data.pagination) {
@@ -294,6 +272,60 @@ async function loadProducts() {
         console.error('Load products error:', error);
         notify('Errore caricamento prodotti', 'error');
     }
+}
+
+function displayProducts(products) {
+    const tbody = document.getElementById('products-table-body');
+    if (!products || products.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="text-center p-8 text-slate-400">Nessun prodotto trovato</td></tr>';
+        return;
+    }
+
+    tbody.innerHTML = products.map(product => `
+        <tr class="border-t border-slate-700 hover:bg-slate-750">
+            <td class="p-4">
+                <div>
+                    <p class="font-medium">${product.name}</p>
+                    <p class="text-sm text-slate-400">${product.slug}</p>
+                </div>
+            </td>
+            <td class="p-4 text-slate-300">${product.category || '-'}</td>
+            <td class="p-4 font-medium">€${parseFloat(product.price).toFixed(2)}</td>
+            <td class="p-4">
+                <span class="px-3 py-1 rounded-full text-xs ${product.active ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}">
+                    ${product.active ? 'Attivo' : 'Inattivo'}
+                </span>
+            </td>
+            <td class="p-4 text-right">
+                <button onclick="editProduct(${product.id})" class="text-cyan-400 hover:text-cyan-300 mr-3">Modifica</button>
+                <button onclick="toggleProductStatus(${product.id}, ${!product.active})" class="text-${product.active ? 'red' : 'green'}-400 hover:text-${product.active ? 'red' : 'green'}-300">
+                    ${product.active ? 'Disattiva' : 'Attiva'}
+                </button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+function filterProducts() {
+    const nameFilter = document.getElementById('product-filter-name').value.toLowerCase();
+    const categoryFilter = document.getElementById('product-filter-category').value.toLowerCase();
+    const statusFilter = document.getElementById('product-filter-status').value;
+
+    const filtered = allProducts.filter(product => {
+        const matchName = !nameFilter || product.name.toLowerCase().includes(nameFilter) || (product.slug && product.slug.toLowerCase().includes(nameFilter));
+        const matchCategory = !categoryFilter || (product.category && product.category.toLowerCase().includes(categoryFilter));
+        const matchStatus = !statusFilter || product.active.toString() === statusFilter;
+        return matchName && matchCategory && matchStatus;
+    });
+
+    displayProducts(filtered);
+}
+
+function resetProductFilters() {
+    document.getElementById('product-filter-name').value = '';
+    document.getElementById('product-filter-category').value = '';
+    document.getElementById('product-filter-status').value = '';
+    displayProducts(allProducts);
 }
 
 function showProductForm() {
@@ -387,31 +419,9 @@ async function loadOrders() {
 
         const data = await response.json();
         state.orders = data.data || [];
+        allOrders = data.data || [];
 
-        const tbody = document.getElementById('orders-table-body');
-        tbody.innerHTML = state.orders.map(order => `
-            <tr class="border-t border-slate-700 hover:bg-slate-750">
-                <td class="p-4">
-                    <p class="font-medium">${order.order_number}</p>
-                </td>
-                <td class="p-4">
-                    <div>
-                        <p class="font-medium">${order.billing_name}</p>
-                        <p class="text-sm text-slate-400">${order.billing_email}</p>
-                    </div>
-                </td>
-                <td class="p-4 font-medium">€${parseFloat(order.total_amount).toFixed(2)}</td>
-                <td class="p-4">
-                    <span class="px-3 py-1 rounded-full text-xs ${getStatusColor(order.status)}">
-                        ${getStatusLabel(order.status)}
-                    </span>
-                </td>
-                <td class="p-4 text-slate-300">${new Date(order.created_at).toLocaleDateString('it-IT')}</td>
-                <td class="p-4 text-right">
-                    <button onclick="viewOrder(${order.id})" class="text-cyan-400 hover:text-cyan-300">Dettagli</button>
-                </td>
-            </tr>
-        `).join('');
+        displayOrders(allOrders);
 
         // Render pagination controls if pagination data is available
         if (data.pagination) {
@@ -422,6 +432,60 @@ async function loadOrders() {
         console.error('Load orders error:', error);
         notify('Errore caricamento ordini', 'error');
     }
+}
+
+function displayOrders(orders) {
+    const tbody = document.getElementById('orders-table-body');
+    if (!orders || orders.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center p-8 text-slate-400">Nessun ordine trovato</td></tr>';
+        return;
+    }
+
+    tbody.innerHTML = orders.map(order => `
+        <tr class="border-t border-slate-700 hover:bg-slate-750">
+            <td class="p-4">
+                <p class="font-medium">${order.order_number}</p>
+            </td>
+            <td class="p-4">
+                <div>
+                    <p class="font-medium">${order.billing_name}</p>
+                    <p class="text-sm text-slate-400">${order.billing_email}</p>
+                </div>
+            </td>
+            <td class="p-4 font-medium">€${parseFloat(order.total_amount).toFixed(2)}</td>
+            <td class="p-4">
+                <span class="px-3 py-1 rounded-full text-xs ${getStatusColor(order.status)}">
+                    ${getStatusLabel(order.status)}
+                </span>
+            </td>
+            <td class="p-4 text-slate-300">${new Date(order.created_at).toLocaleDateString('it-IT')}</td>
+            <td class="p-4 text-right">
+                <button onclick="viewOrder(${order.id})" class="text-cyan-400 hover:text-cyan-300">Dettagli</button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+function filterOrders() {
+    const numberFilter = document.getElementById('order-filter-number').value.toLowerCase();
+    const customerFilter = document.getElementById('order-filter-customer').value.toLowerCase();
+    const statusFilter = document.getElementById('order-filter-status').value;
+
+    const filtered = allOrders.filter(order => {
+        const matchNumber = !numberFilter || order.order_number.toLowerCase().includes(numberFilter);
+        const matchCustomer = !customerFilter || order.billing_name.toLowerCase().includes(customerFilter) || order.billing_email.toLowerCase().includes(customerFilter);
+        const matchStatus = !statusFilter || order.status === statusFilter;
+        return matchNumber && matchCustomer && matchStatus;
+    });
+
+    displayOrders(filtered);
+}
+
+function resetOrderFilters() {
+    document.getElementById('order-filter-number').value = '';
+    document.getElementById('order-filter-customer').value = '';
+    document.getElementById('order-filter-status').value = '';
+    displayOrders(allOrders);
 }
 
 async function viewOrder(orderId) {
@@ -542,33 +606,9 @@ async function loadUsers() {
 
         const data = await response.json();
         state.users = data.data || [];
+        allUsers = data.data || [];
 
-        const tbody = document.getElementById('users-table-body');
-        tbody.innerHTML = state.users.map(user => `
-            <tr class="border-t border-slate-700 hover:bg-slate-750">
-                <td class="p-4">
-                    <p class="font-medium">${user.name}</p>
-                    ${user.company ? `<p class="text-sm text-slate-400">${user.company}</p>` : ''}
-                </td>
-                <td class="p-4 text-slate-300">${user.email}</td>
-                <td class="p-4">
-                    <span class="px-3 py-1 rounded-full text-xs ${user.role === 'admin' ? 'bg-purple-500/20 text-purple-400' : 'bg-blue-500/20 text-blue-400'}">
-                        ${user.role === 'admin' ? 'Admin' : 'Utente'}
-                    </span>
-                </td>
-                <td class="p-4 text-slate-300">${new Date(user.created_at).toLocaleDateString('it-IT')}</td>
-                <td class="p-4">
-                    <span class="px-3 py-1 rounded-full text-xs ${user.active ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}">
-                        ${user.active ? 'Attivo' : 'Inattivo'}
-                    </span>
-                </td>
-                <td class="p-4 text-right">
-                    <button onclick="toggleUserStatus(${user.id}, ${!user.active})" class="text-${user.active ? 'red' : 'green'}-400 hover:text-${user.active ? 'red' : 'green'}-300 text-sm">
-                        ${user.active ? 'Disattiva' : 'Attiva'}
-                    </button>
-                </td>
-            </tr>
-        `).join('');
+        displayUsers(allUsers);
 
         // Render pagination controls if pagination data is available
         if (data.pagination) {
@@ -581,6 +621,73 @@ async function loadUsers() {
     }
 }
 
+function displayUsers(users) {
+    const tbody = document.getElementById('users-table-body');
+    if (!users || users.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center p-8 text-slate-400">Nessun utente trovato</td></tr>';
+        return;
+    }
+
+    tbody.innerHTML = users.map(user => `
+        <tr class="border-t border-slate-700 hover:bg-slate-750">
+            <td class="p-4">
+                <p class="font-medium">${user.name}</p>
+                ${user.company ? `<p class="text-sm text-slate-400">${user.company}</p>` : ''}
+            </td>
+            <td class="p-4 text-slate-300">${user.email}</td>
+            <td class="p-4">
+                <span class="px-3 py-1 rounded-full text-xs ${user.role === 'admin' ? 'bg-purple-500/20 text-purple-400' : 'bg-blue-500/20 text-blue-400'}">
+                    ${getRoleLabel(user.role)}
+                </span>
+            </td>
+            <td class="p-4 text-slate-300">${new Date(user.created_at).toLocaleDateString('it-IT')}</td>
+            <td class="p-4">
+                <span class="px-3 py-1 rounded-full text-xs ${user.active ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}">
+                    ${user.active ? 'Attivo' : 'Inattivo'}
+                </span>
+            </td>
+            <td class="p-4 text-right">
+                <button onclick="toggleUserStatus(${user.id}, ${!user.active})" class="text-${user.active ? 'red' : 'green'}-400 hover:text-${user.active ? 'red' : 'green'}-300 text-sm">
+                    ${user.active ? 'Disattiva' : 'Attiva'}
+                </button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+function getRoleLabel(role) {
+    const labels = {
+        'admin': 'Admin',
+        'user': 'Utente',
+        'specialist': 'Specialist',
+        'organization_admin': 'Org. Admin',
+        'organization_operator': 'Org. Operator'
+    };
+    return labels[role] || role;
+}
+
+function filterUsers() {
+    const nameFilter = document.getElementById('user-filter-name').value.toLowerCase();
+    const roleFilter = document.getElementById('user-filter-role').value;
+    const statusFilter = document.getElementById('user-filter-status').value;
+
+    const filtered = allUsers.filter(user => {
+        const matchName = !nameFilter || user.name.toLowerCase().includes(nameFilter) || user.email.toLowerCase().includes(nameFilter);
+        const matchRole = !roleFilter || user.role === roleFilter;
+        const matchStatus = !statusFilter || user.active.toString() === statusFilter;
+        return matchName && matchRole && matchStatus;
+    });
+
+    displayUsers(filtered);
+}
+
+function resetUserFilters() {
+    document.getElementById('user-filter-name').value = '';
+    document.getElementById('user-filter-role').value = '';
+    document.getElementById('user-filter-status').value = '';
+    displayUsers(allUsers);
+}
+
 // Contacts Management
 async function loadContacts() {
     try {
@@ -590,37 +697,9 @@ async function loadContacts() {
 
         const data = await response.json();
         state.contacts = data.data || [];
+        allContacts = data.data || [];
 
-        const tbody = document.getElementById('contacts-table-body');
-        tbody.innerHTML = state.contacts.map(contact => `
-            <tr class="border-t border-slate-700 hover:bg-slate-750">
-                <td class="p-4">
-                    <p class="font-medium">${contact.name}</p>
-                    ${contact.company ? `<p class="text-sm text-slate-400">${contact.company}</p>` : ''}
-                    ${contact.linkedin ? `<p class="text-sm text-slate-400">${contact.linkedin}</p>` : ''}
-                </td>
-                <td class="p-4 text-slate-300">${contact.email}</td>
-                <td class="p-4">
-                    <span class="px-2 py-1 rounded text-xs ${contact.user_type === 'COMPANY' ? 'bg-blue-500/20 text-blue-400' : 'bg-cyan-500/20 text-cyan-400'}">
-                        ${contact.user_type === 'COMPANY' ? 'Azienda' : 'Specialist'}
-                    </span>
-                </td>
-                <td class="p-4 text-sm text-slate-300 max-w-xs truncate">${contact.message || '-'}</td>
-                <td class="p-4 text-slate-300">${new Date(contact.created_at).toLocaleDateString('it-IT')}</td>
-                <td class="p-4">
-                    <select onchange="updateContactStatus(${contact.id}, this.value)" class="px-3 py-1 rounded-full text-xs bg-slate-900 border ${getContactStatusBorderColor(contact.status)} ${getContactStatusTextColor(contact.status)}">
-                        <option value="new" ${contact.status === 'new' ? 'selected' : ''}>Nuovo</option>
-                        <option value="contacted" ${contact.status === 'contacted' ? 'selected' : ''}>Contattato</option>
-                        <option value="closed" ${contact.status === 'closed' ? 'selected' : ''}>Chiuso</option>
-                    </select>
-                </td>
-                <td class="p-4 text-right">
-                    <button onclick="viewContactDetails(${contact.id})" class="text-cyan-400 hover:text-cyan-300 text-sm">
-                        Dettagli
-                    </button>
-                </td>
-            </tr>
-        `).join('');
+        displayContacts(allContacts);
 
         // Render pagination controls if pagination data is available
         if (data.pagination) {
@@ -631,6 +710,66 @@ async function loadContacts() {
         console.error('Load contacts error:', error);
         notify('Errore caricamento contatti', 'error');
     }
+}
+
+function displayContacts(contacts) {
+    const tbody = document.getElementById('contacts-table-body');
+    if (!contacts || contacts.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="text-center p-8 text-slate-400">Nessun contatto trovato</td></tr>';
+        return;
+    }
+
+    tbody.innerHTML = contacts.map(contact => `
+        <tr class="border-t border-slate-700 hover:bg-slate-750">
+            <td class="p-4">
+                <p class="font-medium">${contact.name}</p>
+                ${contact.company ? `<p class="text-sm text-slate-400">${contact.company}</p>` : ''}
+                ${contact.linkedin ? `<p class="text-sm text-slate-400">${contact.linkedin}</p>` : ''}
+            </td>
+            <td class="p-4 text-slate-300">${contact.email}</td>
+            <td class="p-4">
+                <span class="px-2 py-1 rounded text-xs ${contact.user_type === 'COMPANY' ? 'bg-blue-500/20 text-blue-400' : 'bg-cyan-500/20 text-cyan-400'}">
+                    ${contact.user_type === 'COMPANY' ? 'Azienda' : 'Specialist'}
+                </span>
+            </td>
+            <td class="p-4 text-sm text-slate-300 max-w-xs truncate">${contact.message || '-'}</td>
+            <td class="p-4 text-slate-300">${new Date(contact.created_at).toLocaleDateString('it-IT')}</td>
+            <td class="p-4">
+                <select onchange="updateContactStatus(${contact.id}, this.value)" class="px-3 py-1 rounded-full text-xs bg-slate-900 border ${getContactStatusBorderColor(contact.status)} ${getContactStatusTextColor(contact.status)}">
+                    <option value="new" ${contact.status === 'new' ? 'selected' : ''}>Nuovo</option>
+                    <option value="contacted" ${contact.status === 'contacted' ? 'selected' : ''}>Contattato</option>
+                    <option value="closed" ${contact.status === 'closed' ? 'selected' : ''}>Chiuso</option>
+                </select>
+            </td>
+            <td class="p-4 text-right">
+                <button onclick="viewContactDetails(${contact.id})" class="text-cyan-400 hover:text-cyan-300 text-sm">
+                    Dettagli
+                </button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+function filterContacts() {
+    const nameFilter = document.getElementById('contact-filter-name').value.toLowerCase();
+    const typeFilter = document.getElementById('contact-filter-type').value;
+    const statusFilter = document.getElementById('contact-filter-status').value;
+
+    const filtered = allContacts.filter(contact => {
+        const matchName = !nameFilter || contact.name.toLowerCase().includes(nameFilter) || contact.email.toLowerCase().includes(nameFilter);
+        const matchType = !typeFilter || contact.user_type === typeFilter;
+        const matchStatus = !statusFilter || contact.status === statusFilter;
+        return matchName && matchType && matchStatus;
+    });
+
+    displayContacts(filtered);
+}
+
+function resetContactFilters() {
+    document.getElementById('contact-filter-name').value = '';
+    document.getElementById('contact-filter-type').value = '';
+    document.getElementById('contact-filter-status').value = '';
+    displayContacts(allContacts);
 }
 
 // Utility Functions
@@ -870,6 +1009,12 @@ function formatDate(dateString) {
     return date.toLocaleDateString('it-IT', { year: 'numeric', month: '2-digit', day: '2-digit' });
 }
 
+// Global arrays for filtering
+let allProducts = [];
+let allOrders = [];
+let allUsers = [];
+let allContacts = [];
+
 // ========== ORGANIZATIONS MANAGEMENT ==========
 
 let allOrganizations = [];
@@ -882,38 +1027,9 @@ async function loadOrganizations() {
 
         const data = await response.json();
         const organizations = data.data.organizations || data.data || [];
+        allOrganizations = organizations;
 
-        const tbody = document.getElementById('organizations-table-body');
-
-        if (!organizations || organizations.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="7" class="text-center p-8 text-slate-400">Nessuna organizzazione trovata</td></tr>';
-            return;
-        }
-
-        tbody.innerHTML = organizations.map(org => `
-        <tr class="border-t border-slate-700 hover:bg-slate-700/50">
-            <td class="p-4">${org.name || '-'}</td>
-            <td class="p-4">${getOrgTypeBadge(org.organization_type)}</td>
-            <td class="p-4">${org.vat_number || '-'}</td>
-            <td class="p-4">${org.city || '-'}</td>
-            <td class="p-4">${getOrgStatusBadge(org.status)}</td>
-            <td class="p-4 text-sm text-slate-400">${formatDate(org.created_at)}</td>
-            <td class="p-4">
-                <div class="flex gap-2">
-                    <button onclick="editOrganization(${org.id})" class="text-cyan-400 hover:text-cyan-300">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                        </svg>
-                    </button>
-                    <button onclick="deleteOrganization(${org.id})" class="text-red-400 hover:text-red-300">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                        </svg>
-                    </button>
-                </div>
-            </td>
-        </tr>
-    `).join('');
+        displayOrganizations(allOrganizations);
 
         // Render pagination controls if pagination data is available
         if (data.pagination) {
@@ -924,6 +1040,40 @@ async function loadOrganizations() {
         console.error('Load organizations error:', error);
         notify('Errore caricamento organizzazioni', 'error');
     }
+}
+
+function displayOrganizations(organizations) {
+    const tbody = document.getElementById('organizations-table-body');
+
+    if (!organizations || organizations.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="text-center p-8 text-slate-400">Nessuna organizzazione trovata</td></tr>';
+        return;
+    }
+
+    tbody.innerHTML = organizations.map(org => `
+    <tr class="border-t border-slate-700 hover:bg-slate-700/50">
+        <td class="p-4">${org.name || '-'}</td>
+        <td class="p-4">${getOrgTypeBadge(org.organization_type)}</td>
+        <td class="p-4">${org.vat_number || '-'}</td>
+        <td class="p-4">${org.city || '-'}</td>
+        <td class="p-4">${getOrgStatusBadge(org.status)}</td>
+        <td class="p-4 text-sm text-slate-400">${formatDate(org.created_at)}</td>
+        <td class="p-4">
+            <div class="flex gap-2">
+                <button onclick="editOrganization(${org.id})" class="text-cyan-400 hover:text-cyan-300">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                    </svg>
+                </button>
+                <button onclick="deleteOrganization(${org.id})" class="text-red-400 hover:text-red-300">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </td>
+    </tr>
+`).join('');
 }
 
 function filterOrganizations() {
@@ -1092,38 +1242,9 @@ async function loadSpecialists() {
 
         const data = await response.json();
         const specialists = data.data.specialists || data.data || [];
+        allSpecialists = specialists;
 
-        const tbody = document.getElementById('specialists-table-body');
-
-        if (!specialists || specialists.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="7" class="text-center p-8 text-slate-400">Nessuno specialist trovato</td></tr>';
-            return;
-        }
-
-        tbody.innerHTML = specialists.map(spec => `
-        <tr class="border-t border-slate-700 hover:bg-slate-700/50">
-            <td class="p-4">${spec.name || spec.user_name || '-'}</td>
-            <td class="p-4 text-sm">${spec.email || spec.user_email || '-'}</td>
-            <td class="p-4">${spec.experience_years || 0} anni</td>
-            <td class="p-4">${spec.total_cpe_credits || 0}</td>
-            <td class="p-4">${getSpecStatusBadge(spec.certification_status)}</td>
-            <td class="p-4 text-sm text-slate-400">${spec.certification_date ? formatDate(spec.certification_date) : '-'}</td>
-            <td class="p-4">
-                <div class="flex gap-2">
-                    <button onclick="editSpecialist(${spec.id})" class="text-cyan-400 hover:text-cyan-300">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                        </svg>
-                    </button>
-                    <button onclick="deleteSpecialist(${spec.id})" class="text-red-400 hover:text-red-300">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                        </svg>
-                    </button>
-                </div>
-            </td>
-        </tr>
-    `).join('');
+        displaySpecialists(allSpecialists);
 
         // Render pagination controls if pagination data is available
         if (data.pagination) {
@@ -1134,6 +1255,40 @@ async function loadSpecialists() {
         console.error('Load specialists error:', error);
         notify('Errore caricamento specialist', 'error');
     }
+}
+
+function displaySpecialists(specialists) {
+    const tbody = document.getElementById('specialists-table-body');
+
+    if (!specialists || specialists.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="text-center p-8 text-slate-400">Nessuno specialist trovato</td></tr>';
+        return;
+    }
+
+    tbody.innerHTML = specialists.map(spec => `
+    <tr class="border-t border-slate-700 hover:bg-slate-700/50">
+        <td class="p-4">${spec.name || spec.user_name || '-'}</td>
+        <td class="p-4 text-sm">${spec.email || spec.user_email || '-'}</td>
+        <td class="p-4">${spec.experience_years || 0} anni</td>
+        <td class="p-4">${spec.total_cpe_credits || 0}</td>
+        <td class="p-4">${getSpecStatusBadge(spec.certification_status)}</td>
+        <td class="p-4 text-sm text-slate-400">${spec.certification_date ? formatDate(spec.certification_date) : '-'}</td>
+        <td class="p-4">
+            <div class="flex gap-2">
+                <button onclick="editSpecialist(${spec.id})" class="text-cyan-400 hover:text-cyan-300">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                    </svg>
+                </button>
+                <button onclick="deleteSpecialist(${spec.id})" class="text-red-400 hover:text-red-300">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </td>
+    </tr>
+`).join('');
 }
 
 function filterSpecialists() {

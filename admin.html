@@ -196,6 +196,41 @@
                     </button>
                 </div>
 
+                <!-- Filters -->
+                <div class="bg-slate-800 rounded-lg p-4 mb-6 border border-slate-700">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <input
+                            type="text"
+                            id="product-filter-name"
+                            placeholder="Cerca per nome..."
+                            class="bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500"
+                            oninput="filterProducts()"
+                        >
+                        <input
+                            type="text"
+                            id="product-filter-category"
+                            placeholder="Categoria..."
+                            class="bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500"
+                            oninput="filterProducts()"
+                        >
+                        <select
+                            id="product-filter-status"
+                            class="bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-cyan-500"
+                            onchange="filterProducts()"
+                        >
+                            <option value="">Tutti gli stati</option>
+                            <option value="true">Attivo</option>
+                            <option value="false">Inattivo</option>
+                        </select>
+                        <button
+                            onclick="resetProductFilters()"
+                            class="bg-slate-700 hover:bg-slate-600 text-white py-2 px-4 rounded-lg transition-colors"
+                        >
+                            Reset Filtri
+                        </button>
+                    </div>
+                </div>
+
                 <div id="product-form" class="hidden bg-slate-800 rounded-xl p-6 border border-slate-700 mb-6">
                     <h3 class="text-xl font-bold mb-4" id="product-form-title">Nuovo Prodotto</h3>
                     <form id="product-edit-form" class="space-y-4">
@@ -266,6 +301,44 @@
             <section id="section-orders" class="section-content hidden">
                 <h1 class="text-3xl font-bold mb-8">Gestione Ordini</h1>
 
+                <!-- Filters -->
+                <div class="bg-slate-800 rounded-lg p-4 mb-6 border border-slate-700">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <input
+                            type="text"
+                            id="order-filter-number"
+                            placeholder="Cerca per numero ordine..."
+                            class="bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500"
+                            oninput="filterOrders()"
+                        >
+                        <input
+                            type="text"
+                            id="order-filter-customer"
+                            placeholder="Cliente..."
+                            class="bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500"
+                            oninput="filterOrders()"
+                        >
+                        <select
+                            id="order-filter-status"
+                            class="bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-cyan-500"
+                            onchange="filterOrders()"
+                        >
+                            <option value="">Tutti gli stati</option>
+                            <option value="pending">In Attesa</option>
+                            <option value="confirmed">Confermato</option>
+                            <option value="processing">In Lavorazione</option>
+                            <option value="completed">Completato</option>
+                            <option value="cancelled">Annullato</option>
+                        </select>
+                        <button
+                            onclick="resetOrderFilters()"
+                            class="bg-slate-700 hover:bg-slate-600 text-white py-2 px-4 rounded-lg transition-colors"
+                        >
+                            Reset Filtri
+                        </button>
+                    </div>
+                </div>
+
                 <div class="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden">
                     <table class="w-full">
                         <thead class="bg-slate-900">
@@ -290,6 +363,45 @@
             <section id="section-users" class="section-content hidden">
                 <h1 class="text-3xl font-bold mb-8">Gestione Utenti</h1>
 
+                <!-- Filters -->
+                <div class="bg-slate-800 rounded-lg p-4 mb-6 border border-slate-700">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <input
+                            type="text"
+                            id="user-filter-name"
+                            placeholder="Cerca per nome o email..."
+                            class="bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500"
+                            oninput="filterUsers()"
+                        >
+                        <select
+                            id="user-filter-role"
+                            class="bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-cyan-500"
+                            onchange="filterUsers()"
+                        >
+                            <option value="">Tutti i ruoli</option>
+                            <option value="admin">Admin</option>
+                            <option value="user">Utente</option>
+                            <option value="specialist">Specialist</option>
+                            <option value="organization_admin">Org. Admin</option>
+                        </select>
+                        <select
+                            id="user-filter-status"
+                            class="bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-cyan-500"
+                            onchange="filterUsers()"
+                        >
+                            <option value="">Tutti gli stati</option>
+                            <option value="true">Attivo</option>
+                            <option value="false">Inattivo</option>
+                        </select>
+                        <button
+                            onclick="resetUserFilters()"
+                            class="bg-slate-700 hover:bg-slate-600 text-white py-2 px-4 rounded-lg transition-colors"
+                        >
+                            Reset Filtri
+                        </button>
+                    </div>
+                </div>
+
                 <div class="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden">
                     <table class="w-full">
                         <thead class="bg-slate-900">
@@ -313,6 +425,44 @@
             <!-- Contacts Section -->
             <section id="section-contacts" class="section-content hidden">
                 <h1 class="text-3xl font-bold mb-8">Contatti Ricevuti</h1>
+
+                <!-- Filters -->
+                <div class="bg-slate-800 rounded-lg p-4 mb-6 border border-slate-700">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <input
+                            type="text"
+                            id="contact-filter-name"
+                            placeholder="Cerca per nome o email..."
+                            class="bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500"
+                            oninput="filterContacts()"
+                        >
+                        <select
+                            id="contact-filter-type"
+                            class="bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-cyan-500"
+                            onchange="filterContacts()"
+                        >
+                            <option value="">Tutti i tipi</option>
+                            <option value="COMPANY">Azienda</option>
+                            <option value="SPECIALIST">Specialist</option>
+                        </select>
+                        <select
+                            id="contact-filter-status"
+                            class="bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-cyan-500"
+                            onchange="filterContacts()"
+                        >
+                            <option value="">Tutti gli stati</option>
+                            <option value="new">Nuovo</option>
+                            <option value="contacted">Contattato</option>
+                            <option value="closed">Chiuso</option>
+                        </select>
+                        <button
+                            onclick="resetContactFilters()"
+                            class="bg-slate-700 hover:bg-slate-600 text-white py-2 px-4 rounded-lg transition-colors"
+                        >
+                            Reset Filtri
+                        </button>
+                    </div>
+                </div>
 
                 <div class="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden">
                     <table class="w-full">
