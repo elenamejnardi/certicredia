@@ -115,7 +115,7 @@ async function seedEnhancedDemoData() {
     const orgIds = {};
     for (const org of organizationsData) {
       const result = await client.query(
-        `INSERT INTO organizations (name, type, vat_number, address, city, postal_code, country, status, contact_email)
+        `INSERT INTO organizations (name, organization_type, vat_number, address, city, postal_code, country, status, email)
          VALUES ($1, $2, $3, $4, $5, $6, 'IT', 'active', $7)
          RETURNING id`,
         [org.name, org.type, org.vat, `Via ${org.name} 123`, org.city, '00100', org.adminEmail]
