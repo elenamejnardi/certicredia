@@ -8,13 +8,15 @@ const { Client } = pg;
 const SALT_ROUNDS = 10;
 
 async function seedDemoUsers() {
-  const client = new Client({
-    user: process.env.DB_USER || 'postgres',
-    host: process.env.DB_HOST || 'localhost',
-    database: process.env.DB_NAME || 'certicredia',
-    password: process.env.DB_PASSWORD || 'postgres',
-    port: process.env.DB_PORT || 5432,
-  });
+  const client = new Client(
+    process.env.DATABASE_URL || {
+      user: process.env.DB_USER || 'postgres',
+      host: process.env.DB_HOST || 'localhost',
+      database: process.env.DB_NAME || 'certicredia',
+      password: process.env.DB_PASSWORD || 'postgres',
+      port: process.env.DB_PORT || 5432,
+    }
+  );
 
   try {
     await client.connect();
