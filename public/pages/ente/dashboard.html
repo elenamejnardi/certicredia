@@ -283,6 +283,7 @@
     async function loadOrganizationData() {
       try {
         const token = localStorage.getItem('authToken');
+        console.log('🔍 Loading organization data...');
 
         const response = await fetch(`${API_BASE}/api/organizations/me`, {
           headers: {
@@ -290,17 +291,22 @@
           }
         });
 
+        console.log('📡 Response status:', response.status);
         const data = await response.json();
+        console.log('📦 Response data:', data);
 
-        if (data.success) {
+        if (data.success && data.data) {
           currentOrg = data.data;
+          console.log('✅ Organization loaded:', currentOrg);
           displayOrganizationData(currentOrg);
           loadAssignedSpecialists();
         } else {
-          console.error('Errore caricamento organizzazione:', data.message);
+          console.error('❌ Errore caricamento organizzazione:', data.message || 'Nessun dato');
+          alert('Errore: ' + (data.message || 'Impossibile caricare i dati dell\'organizzazione. Verifica di essere associato a un\'organizzazione.'));
         }
       } catch (error) {
-        console.error('Load organization error:', error);
+        console.error('💥 Load organization error:', error);
+        alert('Errore di connessione: ' + error.message);
       }
     }
 

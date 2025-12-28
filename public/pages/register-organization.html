@@ -7,11 +7,11 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     .gradient-bg {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
     }
   </style>
 </head>
-<body class="bg-gray-50">
+<body class="bg-slate-900">
 
   <!-- Header -->
   <header class="gradient-bg text-white py-6">
@@ -26,8 +26,8 @@
   <main class="max-w-3xl mx-auto px-4 py-12">
 
     <!-- Registration Form Card -->
-    <div class="bg-white rounded-lg shadow-lg p-8">
-      <h2 class="text-2xl font-bold text-gray-800 mb-6">Dati Organizzazione</h2>
+    <div class="bg-slate-800 rounded-lg shadow-lg p-8 border border-slate-700">
+      <h2 class="text-2xl font-bold text-white mb-6">Dati Organizzazione</h2>
 
       <!-- Error/Success Messages -->
       <div id="messageBox" class="hidden mb-4 p-4 rounded-lg"></div>
@@ -36,13 +36,13 @@
       <form id="registerForm">
 
         <!-- Organization Type -->
-        <div class="mb-6 bg-purple-50 border border-purple-200 rounded-lg p-4">
-          <label for="organizationType" class="block text-gray-700 font-semibold mb-2">Tipo Organizzazione *</label>
+        <div class="mb-6 bg-green-900/20 border border-green-700/50 rounded-lg p-4">
+          <label for="organizationType" class="block text-slate-300 font-semibold mb-2">Tipo Organizzazione *</label>
           <select
             id="organizationType"
             name="organizationType"
             required
-            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            class="w-full px-4 py-2 bg-slate-900 border border-slate-600 rounded-lg px-4 py-2 text-white placeholder-slate-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500"
           >
             <option value="">-- Seleziona --</option>
             <option value="PUBLIC_ENTITY">Ente Pubblico</option>
@@ -51,17 +51,17 @@
           </select>
         </div>
 
-        <h3 class="text-lg font-bold text-gray-700 mb-4 border-b pb-2">Informazioni Organizzazione</h3>
+        <h3 class="text-lg font-bold text-slate-300 mb-4 border-b pb-2">Informazioni Organizzazione</h3>
 
         <!-- Organization Name -->
         <div class="mb-4">
-          <label for="organizationName" class="block text-gray-700 font-semibold mb-2">Nome Organizzazione *</label>
+          <label for="organizationName" class="block text-slate-300 font-semibold mb-2">Nome Organizzazione *</label>
           <input
             type="text"
             id="organizationName"
             name="organizationName"
             required
-            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            class="w-full px-4 py-2 bg-slate-900 border border-slate-600 rounded-lg px-4 py-2 text-white placeholder-slate-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500"
             placeholder="Es: Comune di Milano, Azienda XYZ S.r.l."
           />
         </div>
@@ -69,22 +69,22 @@
         <!-- VAT & Fiscal Code -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <div>
-            <label for="vatNumber" class="block text-gray-700 font-semibold mb-2">Partita IVA</label>
+            <label for="vatNumber" class="block text-slate-300 font-semibold mb-2">Partita IVA</label>
             <input
               type="text"
               id="vatNumber"
               name="vatNumber"
-              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              class="w-full px-4 py-2 bg-slate-900 border border-slate-600 rounded-lg px-4 py-2 text-white placeholder-slate-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500"
               placeholder="IT12345678901"
             />
           </div>
           <div>
-            <label for="fiscalCode" class="block text-gray-700 font-semibold mb-2">Codice Fiscale</label>
+            <label for="fiscalCode" class="block text-slate-300 font-semibold mb-2">Codice Fiscale</label>
             <input
               type="text"
               id="fiscalCode"
               name="fiscalCode"
-              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              class="w-full px-4 py-2 bg-slate-900 border border-slate-600 rounded-lg px-4 py-2 text-white placeholder-slate-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500"
               placeholder="12345678901"
             />
           </div>
@@ -92,13 +92,13 @@
 
         <!-- Address -->
         <div class="mb-4">
-          <label for="address" class="block text-gray-700 font-semibold mb-2">Indirizzo *</label>
+          <label for="address" class="block text-slate-300 font-semibold mb-2">Indirizzo *</label>
           <input
             type="text"
             id="address"
             name="address"
             required
-            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            class="w-full px-4 py-2 bg-slate-900 border border-slate-600 rounded-lg px-4 py-2 text-white placeholder-slate-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500"
             placeholder="Via Roma 123"
           />
         </div>
@@ -106,24 +106,24 @@
         <!-- City & Postal Code -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <div>
-            <label for="city" class="block text-gray-700 font-semibold mb-2">Città *</label>
+            <label for="city" class="block text-slate-300 font-semibold mb-2">Città *</label>
             <input
               type="text"
               id="city"
               name="city"
               required
-              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              class="w-full px-4 py-2 bg-slate-900 border border-slate-600 rounded-lg px-4 py-2 text-white placeholder-slate-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500"
               placeholder="Milano"
             />
           </div>
           <div>
-            <label for="postalCode" class="block text-gray-700 font-semibold mb-2">CAP *</label>
+            <label for="postalCode" class="block text-slate-300 font-semibold mb-2">CAP *</label>
             <input
               type="text"
               id="postalCode"
               name="postalCode"
               required
-              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              class="w-full px-4 py-2 bg-slate-900 border border-slate-600 rounded-lg px-4 py-2 text-white placeholder-slate-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500"
               placeholder="20100"
             />
           </div>
@@ -132,51 +132,51 @@
         <!-- Contact Email & Phone -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
           <div>
-            <label for="email" class="block text-gray-700 font-semibold mb-2">Email Organizzazione *</label>
+            <label for="email" class="block text-slate-300 font-semibold mb-2">Email Organizzazione *</label>
             <input
               type="email"
               id="email"
               name="email"
               required
-              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              class="w-full px-4 py-2 bg-slate-900 border border-slate-600 rounded-lg px-4 py-2 text-white placeholder-slate-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500"
               placeholder="info@organizzazione.it"
             />
           </div>
           <div>
-            <label for="phone" class="block text-gray-700 font-semibold mb-2">Telefono</label>
+            <label for="phone" class="block text-slate-300 font-semibold mb-2">Telefono</label>
             <input
               type="tel"
               id="phone"
               name="phone"
-              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              class="w-full px-4 py-2 bg-slate-900 border border-slate-600 rounded-lg px-4 py-2 text-white placeholder-slate-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500"
               placeholder="+39 02 1234567"
             />
           </div>
         </div>
 
-        <h3 class="text-lg font-bold text-gray-700 mb-4 border-b pb-2">Responsabile Account</h3>
+        <h3 class="text-lg font-bold text-slate-300 mb-4 border-b pb-2">Responsabile Account</h3>
 
         <!-- Contact Person Name -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <div>
-            <label for="contactFirstName" class="block text-gray-700 font-semibold mb-2">Nome Responsabile *</label>
+            <label for="contactFirstName" class="block text-slate-300 font-semibold mb-2">Nome Responsabile *</label>
             <input
               type="text"
               id="contactFirstName"
               name="contactFirstName"
               required
-              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              class="w-full px-4 py-2 bg-slate-900 border border-slate-600 rounded-lg px-4 py-2 text-white placeholder-slate-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500"
               placeholder="Mario"
             />
           </div>
           <div>
-            <label for="contactLastName" class="block text-gray-700 font-semibold mb-2">Cognome Responsabile *</label>
+            <label for="contactLastName" class="block text-slate-300 font-semibold mb-2">Cognome Responsabile *</label>
             <input
               type="text"
               id="contactLastName"
               name="contactLastName"
               required
-              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              class="w-full px-4 py-2 bg-slate-900 border border-slate-600 rounded-lg px-4 py-2 text-white placeholder-slate-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500"
               placeholder="Rossi"
             />
           </div>
@@ -185,46 +185,46 @@
         <!-- Contact Email & Phone -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <div>
-            <label for="contactEmail" class="block text-gray-700 font-semibold mb-2">Email Responsabile *</label>
+            <label for="contactEmail" class="block text-slate-300 font-semibold mb-2">Email Responsabile *</label>
             <input
               type="email"
               id="contactEmail"
               name="contactEmail"
               required
-              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              class="w-full px-4 py-2 bg-slate-900 border border-slate-600 rounded-lg px-4 py-2 text-white placeholder-slate-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500"
               placeholder="mario.rossi@organizzazione.it"
             />
           </div>
           <div>
-            <label for="contactPhone" class="block text-gray-700 font-semibold mb-2">Telefono Responsabile</label>
+            <label for="contactPhone" class="block text-slate-300 font-semibold mb-2">Telefono Responsabile</label>
             <input
               type="tel"
               id="contactPhone"
               name="contactPhone"
-              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              class="w-full px-4 py-2 bg-slate-900 border border-slate-600 rounded-lg px-4 py-2 text-white placeholder-slate-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500"
               placeholder="+39 333 1234567"
             />
           </div>
         </div>
 
-        <h3 class="text-lg font-bold text-gray-700 mb-4 border-b pb-2">Credenziali Accesso</h3>
+        <h3 class="text-lg font-bold text-slate-300 mb-4 border-b pb-2">Credenziali Accesso</h3>
 
         <!-- Password -->
         <div class="mb-4">
-          <label for="password" class="block text-gray-700 font-semibold mb-2">Password *</label>
+          <label for="password" class="block text-slate-300 font-semibold mb-2">Password *</label>
           <div class="relative">
             <input
               type="password"
               id="password"
               name="password"
               required
-              class="w-full px-4 py-2 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              class="w-full px-4 py-2 pr-12 bg-slate-900 border border-slate-600 rounded-lg px-4 py-2 text-white placeholder-slate-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500"
               placeholder="••••••••••••••••••••••••"
             />
             <button
               type="button"
               id="togglePassword"
-              class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+              class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300"
             >
               <svg id="eyeIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
@@ -232,18 +232,18 @@
               </svg>
             </button>
           </div>
-          <p class="text-xs text-gray-500 mt-1">Minimo 12 caratteri, lettere maiuscole, minuscole, numeri e simboli</p>
+          <p class="text-xs text-slate-500 mt-1">Minimo 12 caratteri, lettere maiuscole, minuscole, numeri e simboli</p>
         </div>
 
         <!-- Confirm Password -->
         <div class="mb-6">
-          <label for="confirmPassword" class="block text-gray-700 font-semibold mb-2">Conferma Password *</label>
+          <label for="confirmPassword" class="block text-slate-300 font-semibold mb-2">Conferma Password *</label>
           <input
             type="password"
             id="confirmPassword"
             name="confirmPassword"
             required
-            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            class="w-full px-4 py-2 bg-slate-900 border border-slate-600 rounded-lg px-4 py-2 text-white placeholder-slate-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500"
             placeholder="••••••••••••••••••••••••"
           />
         </div>
@@ -252,7 +252,7 @@
         <div class="mb-6">
           <label class="flex items-start">
             <input type="checkbox" id="terms" required class="mt-1 mr-2">
-            <span class="text-sm text-gray-600">
+            <span class="text-sm text-slate-400">
               Accetto i <a href="#" class="text-purple-600 hover:text-purple-700">Termini e Condizioni</a>
               e la <a href="#" class="text-purple-600 hover:text-purple-700">Privacy Policy</a> *
             </span>
@@ -271,14 +271,14 @@
       </form>
 
       <!-- Divider -->
-      <div class="mt-8 pt-6 border-t border-gray-200 text-center">
-        <p class="text-gray-600">
+      <div class="mt-8 pt-6 border-t border-slate-700 text-center">
+        <p class="text-slate-400">
           Hai già un account?
           <a href="/public/pages/app-landing.html" class="text-purple-600 hover:text-purple-700 font-semibold">
             Accedi
           </a>
         </p>
-        <p class="text-gray-600 mt-2">
+        <p class="text-slate-400 mt-2">
           Sei uno specialist?
           <a href="/public/pages/register-specialist.html" class="text-cyan-600 hover:text-cyan-700 font-semibold">
             Registrati come Specialist
@@ -289,9 +289,9 @@
     </div>
 
     <!-- Info Box -->
-    <div class="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-4">
-      <h3 class="font-bold text-blue-800 mb-2">Cosa succede dopo la registrazione?</h3>
-      <ul class="text-sm text-blue-700 space-y-1">
+    <div class="mt-8 bg-cyan-900/20 border border-cyan-700/50 rounded-lg p-4">
+      <h3 class="font-bold text-cyan-300 mb-2">Cosa succede dopo la registrazione?</h3>
+      <ul class="text-sm text-cyan-400 space-y-1">
         <li>✓ L'account verrà verificato dal nostro team</li>
         <li>✓ Riceverai una email di conferma</li>
         <li>✓ Potrai accedere alla dashboard organizzazione</li>
@@ -313,7 +313,7 @@
       messageBox.className = `mb-4 p-4 rounded-lg ${
         type === 'error' ? 'bg-red-100 border border-red-400 text-red-700' :
         type === 'success' ? 'bg-green-100 border border-green-400 text-green-700' :
-        'bg-blue-100 border border-blue-400 text-blue-700'
+        'bg-blue-100 border border-blue-400 text-cyan-400'
       }`;
       messageBox.textContent = message;
       messageBox.classList.remove('hidden');

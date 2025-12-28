@@ -7,11 +7,11 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     .gradient-bg {
-      background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
     }
   </style>
 </head>
-<body class="bg-gray-50">
+<body class="bg-slate-900">
 
   <!-- Header -->
   <header class="gradient-bg text-white py-6">
@@ -26,8 +26,8 @@
   <main class="max-w-2xl mx-auto px-4 py-12">
 
     <!-- Registration Form Card -->
-    <div class="bg-white rounded-lg shadow-lg p-8">
-      <h2 class="text-2xl font-bold text-gray-800 mb-6">Dati Specialist</h2>
+    <div class="bg-slate-800 rounded-lg shadow-lg p-8 border border-slate-700">
+      <h2 class="text-2xl font-bold text-white mb-6">Dati Specialist</h2>
 
       <!-- Error/Success Messages -->
       <div id="messageBox" class="hidden mb-4 p-4 rounded-lg"></div>
@@ -35,29 +35,29 @@
       <!-- Registration Form -->
       <form id="registerForm">
 
-        <h3 class="text-lg font-bold text-gray-700 mb-4 border-b pb-2">Informazioni Personali</h3>
+        <h3 class="text-lg font-bold text-slate-300 mb-4 border-b pb-2">Informazioni Personali</h3>
 
         <!-- Name Fields -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <div>
-            <label for="firstName" class="block text-gray-700 font-semibold mb-2">Nome *</label>
+            <label for="firstName" class="block text-slate-300 font-semibold mb-2">Nome *</label>
             <input
               type="text"
               id="firstName"
               name="firstName"
               required
-              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+              class="w-full px-4 py-2 bg-slate-900 border border-slate-600 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500"
               placeholder="Mario"
             />
           </div>
           <div>
-            <label for="lastName" class="block text-gray-700 font-semibold mb-2">Cognome *</label>
+            <label for="lastName" class="block text-slate-300 font-semibold mb-2">Cognome *</label>
             <input
               type="text"
               id="lastName"
               name="lastName"
               required
-              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+              class="w-full px-4 py-2 bg-slate-900 border border-slate-600 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500"
               placeholder="Rossi"
             />
           </div>
@@ -65,34 +65,34 @@
 
         <!-- Email -->
         <div class="mb-4">
-          <label for="email" class="block text-gray-700 font-semibold mb-2">Email *</label>
+          <label for="email" class="block text-slate-300 font-semibold mb-2">Email *</label>
           <input
             type="email"
             id="email"
             name="email"
             required
-            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+            class="w-full px-4 py-2 bg-slate-900 border border-slate-600 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500"
             placeholder="mario.rossi@example.com"
           />
         </div>
 
         <!-- Phone -->
         <div class="mb-6">
-          <label for="phone" class="block text-gray-700 font-semibold mb-2">Telefono</label>
+          <label for="phone" class="block text-slate-300 font-semibold mb-2">Telefono</label>
           <input
             type="tel"
             id="phone"
             name="phone"
-            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+            class="w-full px-4 py-2 bg-slate-900 border border-slate-600 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500"
             placeholder="+39 333 1234567"
           />
         </div>
 
-        <h3 class="text-lg font-bold text-gray-700 mb-4 border-b pb-2">Esperienza Professionale</h3>
+        <h3 class="text-lg font-bold text-slate-300 mb-4 border-b pb-2">Esperienza Professionale</h3>
 
         <!-- Years of Experience -->
         <div class="mb-4">
-          <label for="experienceYears" class="block text-gray-700 font-semibold mb-2">Anni di Esperienza in Cybersecurity *</label>
+          <label for="experienceYears" class="block text-slate-300 font-semibold mb-2">Anni di Esperienza in Cybersecurity *</label>
           <input
             type="number"
             id="experienceYears"
@@ -100,43 +100,43 @@
             required
             min="0"
             max="50"
-            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+            class="w-full px-4 py-2 bg-slate-900 border border-slate-600 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500"
             placeholder="5"
           />
-          <p class="text-xs text-gray-500 mt-1">Inserisci gli anni di esperienza comprovabile in ambito cybersecurity</p>
+          <p class="text-xs text-slate-500 mt-1">Inserisci gli anni di esperienza comprovabile in ambito cybersecurity</p>
         </div>
 
         <!-- Bio / Expertise -->
         <div class="mb-6">
-          <label for="bio" class="block text-gray-700 font-semibold mb-2">Competenze e Certificazioni</label>
+          <label for="bio" class="block text-slate-300 font-semibold mb-2">Competenze e Certificazioni</label>
           <textarea
             id="bio"
             name="bio"
             rows="4"
-            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+            class="w-full px-4 py-2 bg-slate-900 border border-slate-600 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500"
             placeholder="Descrivi brevemente le tue competenze principali, certificazioni (es: CISSP, CEH, OSCP), e aree di specializzazione..."
           ></textarea>
-          <p class="text-xs text-gray-500 mt-1">Opzionale, ma consigliato per velocizzare l'approvazione</p>
+          <p class="text-xs text-slate-500 mt-1">Opzionale, ma consigliato per velocizzare l'approvazione</p>
         </div>
 
-        <h3 class="text-lg font-bold text-gray-700 mb-4 border-b pb-2">Credenziali Accesso</h3>
+        <h3 class="text-lg font-bold text-slate-300 mb-4 border-b pb-2">Credenziali Accesso</h3>
 
         <!-- Password -->
         <div class="mb-4">
-          <label for="password" class="block text-gray-700 font-semibold mb-2">Password *</label>
+          <label for="password" class="block text-slate-300 font-semibold mb-2">Password *</label>
           <div class="relative">
             <input
               type="password"
               id="password"
               name="password"
               required
-              class="w-full px-4 py-2 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+              class="w-full px-4 py-2 pr-12 bg-slate-900 border border-slate-600 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500"
               placeholder="••••••••••••••••••••••••"
             />
             <button
               type="button"
               id="togglePassword"
-              class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+              class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300"
             >
               <svg id="eyeIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
@@ -144,18 +144,18 @@
               </svg>
             </button>
           </div>
-          <p class="text-xs text-gray-500 mt-1">Minimo 12 caratteri, lettere maiuscole, minuscole, numeri e simboli</p>
+          <p class="text-xs text-slate-500 mt-1">Minimo 12 caratteri, lettere maiuscole, minuscole, numeri e simboli</p>
         </div>
 
         <!-- Confirm Password -->
         <div class="mb-6">
-          <label for="confirmPassword" class="block text-gray-700 font-semibold mb-2">Conferma Password *</label>
+          <label for="confirmPassword" class="block text-slate-300 font-semibold mb-2">Conferma Password *</label>
           <input
             type="password"
             id="confirmPassword"
             name="confirmPassword"
             required
-            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+            class="w-full px-4 py-2 bg-slate-900 border border-slate-600 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500"
             placeholder="••••••••••••••••••••••••"
           />
         </div>
@@ -164,7 +164,7 @@
         <div class="mb-6">
           <label class="flex items-start">
             <input type="checkbox" id="terms" required class="mt-1 mr-2">
-            <span class="text-sm text-gray-600">
+            <span class="text-sm text-slate-400">
               Accetto i <a href="#" class="text-cyan-600 hover:text-cyan-700">Termini e Condizioni</a>
               e la <a href="#" class="text-cyan-600 hover:text-cyan-700">Privacy Policy</a> *
             </span>
@@ -183,14 +183,14 @@
       </form>
 
       <!-- Divider -->
-      <div class="mt-8 pt-6 border-t border-gray-200 text-center">
-        <p class="text-gray-600">
+      <div class="mt-8 pt-6 border-t border-slate-700 text-center">
+        <p class="text-slate-400">
           Hai già un account?
           <a href="/public/pages/app-landing.html" class="text-cyan-600 hover:text-cyan-700 font-semibold">
             Accedi
           </a>
         </p>
-        <p class="text-gray-600 mt-2">
+        <p class="text-slate-400 mt-2">
           Sei un'organizzazione?
           <a href="/public/pages/register-organization.html" class="text-purple-600 hover:text-purple-700 font-semibold">
             Registrati come Organizzazione
