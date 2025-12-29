@@ -1022,7 +1022,7 @@ let allOrganizations = [];
 async function loadOrganizations() {
     try {
         const { page, perPage } = state.pagination.organizations;
-        const response = await apiCall(`/api/admin/organizations?page=${page}&limit=${perPage}`);
+        const response = await apiCall(`/api/organizations/admin/all?page=${page}&limit=${perPage}`);
         if (!response) return;
 
         const data = await response.json();
@@ -1237,7 +1237,7 @@ let allSpecialists = [];
 async function loadSpecialists() {
     try {
         const { page, perPage } = state.pagination.specialists;
-        const response = await apiCall(`/api/admin/specialists?page=${page}&limit=${perPage}`);
+        const response = await apiCall(`/api/specialists/admin/all?page=${page}&limit=${perPage}`);
         if (!response) return;
 
         const data = await response.json();
