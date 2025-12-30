@@ -18,8 +18,8 @@
             </a>
             
             <div class="flex items-center gap-4">
-                <a href="/" class="text-slate-300 hover:text-white">Home</a>
-                <a href="/shop.html" class="text-cyan-400">Shop</a>
+                <a href="/" class="text-slate-300 hover:text-white" data-i18n="shop.nav.home">Home</a>
+                <a href="/shop.html" class="text-cyan-400" data-i18n="shop.nav.shop">Shop</a>
                 <a href="/cart.html" class="relative">
                     <svg class="w-6 h-6 text-slate-300 hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
@@ -35,8 +35,8 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <!-- Header -->
             <div class="mb-12">
-                <h1 class="text-4xl font-bold mb-4">Certificazioni Cybersecurity</h1>
-                <p class="text-slate-400 text-lg">Scegli la certificazione più adatta alle tue esigenze</p>
+                <h1 class="text-4xl font-bold mb-4" data-i18n="shop.title">Certificazioni Cybersecurity</h1>
+                <p class="text-slate-400 text-lg" data-i18n="shop.description">Scegli la certificazione più adatta alle tue esigenze</p>
             </div>
 
             <!-- Products Grid -->
@@ -47,7 +47,7 @@
             <!-- Loading State -->
             <div id="loading" class="text-center py-16">
                 <div class="animate-spin rounded-full h-16 w-16 border-b-2 border-cyan-500 mx-auto"></div>
-                <p class="text-slate-400 mt-4">Caricamento prodotti...</p>
+                <p class="text-slate-400 mt-4" data-i18n="shop.loading">Caricamento prodotti...</p>
             </div>
 
             <!-- Empty State -->
@@ -55,11 +55,12 @@
                 <svg class="w-24 h-24 text-slate-700 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
                 </svg>
-                <p class="text-slate-400 text-lg">Nessun prodotto disponibile</p>
+                <p class="text-slate-400 text-lg" data-i18n="shop.empty">Nessun prodotto disponibile</p>
             </div>
         </div>
     </main>
 
+    <script src="/public/js/lang.js"></script>
     <script src="shop.js"></script>
 </body>
 </html>

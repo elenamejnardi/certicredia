@@ -15,39 +15,39 @@
                 <span class="text-xl font-bold">CERTI<span class="text-cyan-400">CREDIA</span></span>
             </a>
             <div class="flex gap-4">
-                <a href="/shop.html" class="text-slate-300 hover:text-white">Shop</a>
+                <a href="/shop.html" class="text-slate-300 hover:text-white" data-i18n="shop.nav.shop">Shop</a>
                 <div id="auth-nav"></div>
             </div>
         </div>
     </nav>
 
     <main class="max-w-6xl mx-auto px-4 py-12">
-        <h1 class="text-3xl font-bold mb-8">Carrello</h1>
+        <h1 class="text-3xl font-bold mb-8" data-i18n="cart.title">Il Tuo Carrello</h1>
         
         <div id="cart-content" class="grid md:grid-cols-3 gap-8">
             <div class="md:col-span-2">
                 <div id="cart-items" class="space-y-4"></div>
                 <div id="cart-empty" class="hidden text-center py-16 bg-slate-800 rounded-xl">
-                    <p class="text-slate-400">Il carrello è vuoto</p>
-                    <a href="/shop.html" class="btn-primary mt-4 inline-block">Vai allo Shop</a>
+                    <p class="text-slate-400" data-i18n="cart.empty">Il tuo carrello è vuoto</p>
+                    <a href="/shop.html" class="btn-primary mt-4 inline-block" data-i18n="cart.empty.shop">Vai allo Shop</a>
                 </div>
             </div>
             
             <div class="md:col-span-1">
                 <div class="bg-slate-800 rounded-xl p-6 sticky top-24">
-                    <h3 class="text-xl font-bold mb-4">Riepilogo</h3>
+                    <h3 class="text-xl font-bold mb-4" data-i18n="checkout.summary">Riepilogo Ordine</h3>
                     <div class="space-y-2 mb-6">
                         <div class="flex justify-between">
-                            <span>Subtotale</span>
+                            <span data-i18n="cart.subtotal">Subtotale</span>
                             <span id="cart-subtotal">€0.00</span>
                         </div>
                         <div class="flex justify-between text-sm text-slate-400">
-                            <span>IVA (22%)</span>
+                            <span data-i18n="checkout.tax">IVA (22%)</span>
                             <span id="cart-tax">€0.00</span>
                         </div>
                         <div class="border-t border-slate-700 pt-2 mt-2">
                             <div class="flex justify-between text-xl font-bold">
-                                <span>Totale</span>
+                                <span data-i18n="cart.total">Totale</span>
                                 <span id="cart-total" class="text-cyan-400">€0.00</span>
                             </div>
                         </div>
@@ -60,6 +60,7 @@
         </div>
     </main>
 
+    <script src="/public/js/lang.js"></script>
     <script src="shop.js"></script>
 </body>
 </html>
