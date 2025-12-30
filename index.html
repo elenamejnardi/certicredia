@@ -13,6 +13,9 @@
 
     <!-- Custom Styles -->
     <link rel="stylesheet" href="styles.css">
+
+    <!-- Language Management System -->
+    <script src="/public/js/lang.js" defer></script>
 </head>
 <body class="bg-slate-900 text-white antialiased selection:bg-cyan-500 selection:text-white">
 
@@ -26,13 +29,19 @@
 
             <!-- Desktop Menu -->
             <div class="hidden md:flex space-x-8 items-center" id="desktop-menu">
-                <a href="#hero" class="nav-link text-sm font-medium text-slate-300 hover:text-cyan-400 transition-colors">Home</a>
-                <a href="#specialists" class="nav-link text-sm font-medium text-slate-300 hover:text-cyan-400 transition-colors">Specialist</a>
-                <a href="#companies" class="nav-link text-sm font-medium text-slate-300 hover:text-cyan-400 transition-colors">Governance</a>
-                <a href="#process" class="nav-link text-sm font-medium text-slate-300 hover:text-cyan-400 transition-colors">Metodologia</a>
-                <a href="#contact" class="nav-link text-sm font-medium text-slate-300 hover:text-cyan-400 transition-colors">Contatti</a>
-                <a href="/shop.html" class="nav-link text-sm font-medium text-slate-300 hover:text-cyan-400 transition-colors">Shop</a>
-                <a href="/public/pages/app-landing.html" class="px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-700 text-white text-sm font-semibold transition-colors">Area Gestionale</a>
+                <a href="#hero" class="nav-link text-sm font-medium text-slate-300 hover:text-cyan-400 transition-colors" data-i18n="nav.home">Home</a>
+                <a href="#specialists" class="nav-link text-sm font-medium text-slate-300 hover:text-cyan-400 transition-colors" data-i18n="nav.specialists">Specialist</a>
+                <a href="#companies" class="nav-link text-sm font-medium text-slate-300 hover:text-cyan-400 transition-colors" data-i18n="nav.companies">Governance</a>
+                <a href="/cpf3.html" class="nav-link text-sm font-medium text-slate-300 hover:text-cyan-400 transition-colors flex items-center gap-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                    </svg>
+                    <span data-i18n="nav.cpf3">CPF3 Framework</span>
+                </a>
+                <a href="#process" class="nav-link text-sm font-medium text-slate-300 hover:text-cyan-400 transition-colors" data-i18n="nav.process">Metodologia</a>
+                <a href="#contact" class="nav-link text-sm font-medium text-slate-300 hover:text-cyan-400 transition-colors" data-i18n="nav.contact">Contatti</a>
+                <a href="/shop.html" class="nav-link text-sm font-medium text-slate-300 hover:text-cyan-400 transition-colors" data-i18n="nav.shop">Shop</a>
+                <a href="/public/pages/app-landing.html" class="px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-700 text-white text-sm font-semibold transition-colors" data-i18n="nav.app">Area Gestionale</a>
             </div>
 
             <!-- Mobile Menu Button -->
@@ -51,13 +60,14 @@
         <!-- Mobile Menu Dropdown -->
         <div id="mobile-menu" class="hidden md:hidden bg-slate-900 border-t border-slate-800 absolute w-full">
             <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                <a href="#hero" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-slate-300 hover:text-white hover:bg-slate-800">Home</a>
-                <a href="#specialists" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-slate-300 hover:text-white hover:bg-slate-800">Specialist</a>
-                <a href="#companies" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-slate-300 hover:text-white hover:bg-slate-800">Governance</a>
-                <a href="#process" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-slate-300 hover:text-white hover:bg-slate-800">Metodologia</a>
-                <a href="#contact" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-slate-300 hover:text-white hover:bg-slate-800">Contatti</a>
-                <a href="/shop.html" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-slate-300 hover:text-white hover:bg-slate-800">Shop</a>
-                <a href="/public/pages/app-landing.html" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium bg-cyan-600 text-white hover:bg-cyan-700">Area Gestionale</a>
+                <a href="#hero" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-slate-300 hover:text-white hover:bg-slate-800" data-i18n="nav.home">Home</a>
+                <a href="#specialists" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-slate-300 hover:text-white hover:bg-slate-800" data-i18n="nav.specialists">Specialist</a>
+                <a href="#companies" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-slate-300 hover:text-white hover:bg-slate-800" data-i18n="nav.companies">Governance</a>
+                <a href="/cpf3.html" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-slate-300 hover:text-white hover:bg-slate-800" data-i18n="nav.cpf3">CPF3 Framework</a>
+                <a href="#process" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-slate-300 hover:text-white hover:bg-slate-800" data-i18n="nav.process">Metodologia</a>
+                <a href="#contact" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-slate-300 hover:text-white hover:bg-slate-800" data-i18n="nav.contact">Contatti</a>
+                <a href="/shop.html" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-slate-300 hover:text-white hover:bg-slate-800" data-i18n="nav.shop">Shop</a>
+                <a href="/public/pages/app-landing.html" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium bg-cyan-600 text-white hover:bg-cyan-700" data-i18n="nav.app">Area Gestionale</a>
             </div>
         </div>
     </nav>
@@ -78,26 +88,26 @@
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
                     </svg>
-                    <span>Nuovo Framework Cybersecurity 2026</span>
+                    <span data-i18n="hero.badge">Nuovo Framework Cybersecurity 2026</span>
                 </div>
 
                 <h1 class="text-5xl md:text-7xl font-extrabold text-white tracking-tight mb-8 leading-tight">
-                    La sicurezza non è un'opzione.<br />
-                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500">
+                    <span data-i18n="hero.title1">La sicurezza non è un'opzione.</span><br />
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500" data-i18n="hero.title2">
                         È una Certificazione.
                     </span>
                 </h1>
 
-                <p class="max-w-2xl mx-auto text-lg md:text-xl text-slate-400 mb-12 leading-relaxed">
+                <p class="max-w-2xl mx-auto text-lg md:text-xl text-slate-400 mb-12 leading-relaxed" data-i18n="hero.description">
                     CertiCredia è il partner strategico per specialisti che vogliono eccellere e organizzazioni che esigono conformità. Un ecosistema unico per la Cybersecurity.
                 </p>
 
                 <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                    <button class="btn-outline w-full sm:w-auto" data-scroll-to="specialists">
+                    <button class="btn-outline w-full sm:w-auto" data-scroll-to="specialists" data-i18n="hero.btn.specialists">
                         Per Specialist
                     </button>
                     <button class="btn-primary w-full sm:w-auto flex items-center justify-center gap-2 group" data-scroll-to="companies">
-                        Per Governance
+                        <span data-i18n="hero.btn.companies">Per Governance</span>
                         <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                         </svg>
@@ -108,19 +118,19 @@
                 <div class="mt-24 grid grid-cols-2 md:grid-cols-4 gap-12 border-t border-slate-800 pt-12">
                     <div class="flex flex-col items-center">
                         <div class="text-6xl md:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-b from-white to-slate-500 mb-2">1.2k</div>
-                        <div class="text-sm font-semibold text-cyan-500 uppercase tracking-widest">Organizzazioni Certificate</div>
+                        <div class="text-sm font-semibold text-cyan-500 uppercase tracking-widest" data-i18n="stats.orgs">Organizzazioni Certificate</div>
                     </div>
                     <div class="flex flex-col items-center">
                         <div class="text-6xl md:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-b from-white to-slate-500 mb-2">100%</div>
-                        <div class="text-sm font-semibold text-cyan-500 uppercase tracking-widest">Specialist Attivi</div>
+                        <div class="text-sm font-semibold text-cyan-500 uppercase tracking-widest" data-i18n="stats.specialists">Specialist Attivi</div>
                     </div>
-                    <div class="flex flex-col items-center">
-                        <div class="text-6xl md:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-b from-white to-slate-500 mb-2">CPF3</div>
-                        <div class="text-sm font-semibold text-cyan-500 uppercase tracking-widest">Compliance</div>
-                    </div>
+                    <a href="/cpf3.html" class="flex flex-col items-center group cursor-pointer hover:scale-105 transition-transform">
+                        <div class="text-6xl md:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-b from-white to-slate-500 mb-2 group-hover:from-cyan-400 group-hover:to-purple-500 transition-all">CPF3</div>
+                        <div class="text-sm font-semibold text-cyan-500 uppercase tracking-widest group-hover:text-cyan-400 transition-colors" data-i18n="stats.compliance">Compliance</div>
+                    </a>
                     <div class="flex flex-col items-center">
                         <div class="text-6xl md:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-b from-white to-slate-500 mb-2">24/7</div>
-                        <div class="text-sm font-semibold text-cyan-500 uppercase tracking-widest">Supporto</div>
+                        <div class="text-sm font-semibold text-cyan-500 uppercase tracking-widest" data-i18n="stats.support">Supporto</div>
                     </div>
                 </div>
             </div>
