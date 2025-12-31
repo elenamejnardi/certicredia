@@ -51,122 +51,20 @@ body {
     color: white;
 }
 
-/* Main Layout - Desktop/Tablet: Grid with affianced sidebar */
+/* Full Width Layout - NO SIDEBAR */
 .dashboard-main {
-    display: grid;
-    grid-template-columns: 320px 1fr;
-    flex: 1;
-    overflow: visible;
-}
-
-/* Sidebar - Desktop/Tablet: Affianced (not overlay) */
-.sidebar {
-    background: white;
-    border-right: 2px solid var(--border);
-    overflow: hidden;
-    min-height: calc(100vh - 120px);
-    height: auto;
-    transition: none;
     display: flex;
     flex-direction: column;
+    flex: 1;
+    overflow: visible;
+    width: 100%;
 }
 
-.sidebar.sidebar-hidden {
-    display: none;
-}
-
-.sidebar-header {
-    padding: 20px;
-    border-bottom: 2px solid var(--border);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.main-content {
+    flex: 1;
+    width: 100%;
+    padding: 30px 40px;
     background: var(--light);
-    flex-shrink: 0;
-}
-
-.sidebar-controls {
-    flex-shrink: 0;
-    background: white;
-}
-
-.sidebar-content {
-    flex: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
-}
-
-.sidebar-header h2 {
-    font-size: 18px;
-    color: var(--primary);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin: 0;
-    flex: 1;
-}
-
-/* Close Button - In Sidebar Header */
-.sidebar-close-btn {
-    background: transparent;
-    color: var(--text-light);
-    border: 2px solid var(--border);
-    width: 36px;
-    height: 36px;
-    border-radius: 6px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
-    flex-shrink: 0;
-}
-
-.sidebar-close-btn:hover {
-    background: var(--highlight);
-    color: white;
-    border-color: var(--highlight);
-}
-
-.sidebar-close-btn svg {
-    width: 18px;
-    height: 18px;
-}
-
-/* Open Button - In Dashboard Header (desktop: hidden by default) */
-.sidebar-open-btn {
-    display: none;
-    background: var(--primary);
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
-    cursor: pointer;
-    align-items: center;
-    gap: 8px;
-    font-size: 14px;
-    font-weight: 600;
-    transition: all 0.2s;
-}
-
-.sidebar-open-btn:hover {
-    background: var(--highlight);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-}
-
-.sidebar-open-btn svg {
-    width: 18px;
-    height: 18px;
-}
-
-/* When sidebar is hidden on desktop, show open button and adjust grid */
-.dashboard-main.sidebar-collapsed {
-    grid-template-columns: 1fr;
-}
-
-.dashboard-main.sidebar-collapsed .sidebar-open-btn {
-    display: inline-flex;
 }
 
 .badge {
@@ -178,26 +76,7 @@ body {
     font-weight: 600;
 }
 
-/* Organization Controls (Search and Sort) */
-.org-controls {
-    padding: 15px;
-    border-bottom: 2px solid var(--border);
-    background: #f8f9fa;
-}
-
-.search-box {
-    margin-bottom: 10px;
-}
-
-.search-input {
-    width: 100%;
-    padding: 10px 12px;
-    border: 2px solid var(--border);
-    border-radius: 8px;
-    font-size: 14px;
-    transition: all 0.2s;
-    background: white;
-}
+/* Organization Controls - REMOVED (no sidebar) */
 
 .search-input:focus {
     outline: none;

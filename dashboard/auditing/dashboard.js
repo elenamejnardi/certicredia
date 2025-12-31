@@ -14,44 +14,36 @@ import {
 } from './client-integrated.js';
 
 // ===== GLOBAL STATE =====
-let organizations = [];
 let selectedOrgId = null;
 let selectedOrgData = null;
-let editingOrgId = null;
-let deletingOrgId = null;
 let selectedIndicatorId = null;
 let categoryFilter = null;
-let sortDirection = 'desc'; // 'asc' or 'desc'
 let categoryDescriptions = null; // Category descriptions (multilingual)
 let currentOrgLanguage = 'en-US'; // Current organization language
 // Note: modalStack is now in ui-utils.js as window.modalStack
 
 // ===== INITIALIZATION =====
 document.addEventListener('DOMContentLoaded', () => {
-    loadAllData();
-    handleHashNavigation();
+    initializeDashboard();
 });
 
-// Handle hash-based navigation (e.g., #organization/123)
-function handleHashNavigation() {
+// Initialize dashboard - load organization from URL hash
+async function initializeDashboard() {
+    // Load category descriptions
+    await loadCategoryDescriptions();
+
+    // Get organization ID from hash (e.g., #organization/123)
     const hash = window.location.hash;
     if (hash && hash.startsWith('#organization/')) {
         const orgId = parseInt(hash.replace('#organization/', ''));
         if (orgId && !isNaN(orgId)) {
-            // Hide sidebar when coming from direct link
-            const sidebar = document.getElementById('sidebar');
-            const dashboardMain = document.getElementById('dashboardMain');
-            if (sidebar) {
-                sidebar.classList.add('sidebar-hidden');
-            }
-            if (dashboardMain) {
-                dashboardMain.classList.add('sidebar-collapsed');
-            }
-            // Load the organization once data is ready
-            setTimeout(() => {
-                loadOrganizationDetails(orgId);
-            }, 500);
+            selectedOrgId = orgId;
+            await loadOrganizationDetails(orgId);
+        } else {
+            showAlert('ID organizzazione non valido nell\'URL', 'error');
         }
+    } else {
+        showAlert('Nessuna organizzazione specificata. Torna al pannello admin e seleziona un\'organizzazione.', 'error');
     }
 }
 
