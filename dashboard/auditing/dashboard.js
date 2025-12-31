@@ -121,12 +121,14 @@ async function loadAllData() {
 
 async function loadOrganizationDetails(orgId) {
     try {
-        const response = await fetch(`/api/organizations/${orgId}`, {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`/api/auditing/organizations/${orgId}`, {
             cache: 'no-cache',
             headers: {
                 'Cache-Control': 'no-cache, no-store, must-revalidate',
                 'Pragma': 'no-cache',
-                'Expires': '0'
+                'Expires': '0',
+                'Authorization': `Bearer ${token}`
             }
         });
         const result = await response.json();
