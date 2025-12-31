@@ -40,10 +40,10 @@ async function initializeDashboard() {
             selectedOrgId = orgId;
             await loadOrganizationDetails(orgId);
         } else {
-            showAlert('ID organizzazione non valido nell\'URL', 'error');
+            console.error('Invalid organization ID in URL');
         }
     } else {
-        showAlert('Nessuna organizzazione specificata. Torna al pannello admin e seleziona un\'organizzazione.', 'error');
+        console.warn('No organization specified in URL hash');
     }
 }
 
@@ -121,12 +121,14 @@ async function loadAllData() {
 
 async function loadOrganizationDetails(orgId) {
     try {
-        const response = await fetch(`/api/organizations/${orgId}`, {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`/api/auditing/organizations/${orgId}`, {
             cache: 'no-cache',
             headers: {
                 'Cache-Control': 'no-cache, no-store, must-revalidate',
                 'Pragma': 'no-cache',
-                'Expires': '0'
+                'Expires': '0',
+                'Authorization': `Bearer ${token}`
             }
         });
         const result = await response.json();
@@ -546,6 +548,12 @@ function renderProgressMatrix(org) {
 
 function renderRiskHeatmap(org) {
     const heatmap = document.getElementById('riskHeatmap');
+    if (!org.aggregates || !org.aggregates.by_category) {
+        if (heatmap) {
+            heatmap.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--text-light);">📊 Nessun dato di rischio disponibile. Crea degli assessment per visualizzare l\'analisi dei rischi.</div>';
+        }
+        return;
+    }
     const categories = org.aggregates.by_category || {};
     const lang = getCategoryLanguage(currentOrgLanguage);
     const t = getTranslations(lang);
@@ -624,6 +632,12 @@ let securityRadarChartInstance = null;
 function renderSecurityRadarChart(org) {
     const canvas = document.getElementById('securityRadarChart');
     const statsDiv = document.getElementById('radarStats');
+    if (!org.aggregates || !org.aggregates.by_category) {
+        if (statsDiv) {
+            statsDiv.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--text-light);">📊 Nessun dato disponibile</div>';
+        }
+        return;
+    }
     const categories = org.aggregates.by_category || {};
     const lang = getCategoryLanguage(currentOrgLanguage);
     const t = getTranslations(lang);
@@ -812,6 +826,10 @@ function renderPrioritizationTable(org) {
     const tbody = document.getElementById('prioritizationTableBody');
     if (!tbody) {
         console.warn('⚠️ prioritizationTableBody not found - skipping render');
+        return;
+    }
+    if (!org.aggregates || !org.aggregates.by_category) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 40px; color: var(--text-light);">📊 Nessun dato disponibile. Crea degli assessment per visualizzare la tabella delle priorità.</td></tr>';
         return;
     }
     const categories = org.aggregates.by_category || {};
@@ -1110,7 +1128,7 @@ async function openIndicatorDetail(indicatorId, orgId) {
     console.log('🎯 openIndicatorDetail called with:', { indicatorId, orgId });
 
     selectedIndicatorId = indicatorId;
-    const assessment = selectedOrgData.assessments[indicatorId];
+    const assessment = selectedOrgData?.assessments?.[indicatorId];
 
     console.log('📊 Assessment exists?', !!assessment);
 

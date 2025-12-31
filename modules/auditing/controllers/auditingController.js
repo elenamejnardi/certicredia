@@ -1,10 +1,95 @@
 import * as auditingService from '../services/auditingService.js';
+import * as organizationService from '../../organizations/services/organizationService.js';
 import logger from '../../../server/utils/logger.js';
 
 /**
  * CPF Auditing Controller
  * Handles HTTP requests for CPF auditing assessments
  */
+
+/**
+ * Transform assessment data from DB format to frontend format
+ */
+function transformAssessmentData(dbAssessment) {
+  const assessments = {};
+  const categoryStats = {};
+
+  // Transform assessment_data from "1-1" format to "1.1" format with bayesian_score
+  const assessmentData = dbAssessment.assessment_data || {};
+
+  for (const [key, data] of Object.entries(assessmentData)) {
+    // Convert "1-1" to "1.1"
+    const indicatorId = key.replace('-', '.');
+    const category = key.split('-')[0];
+
+    // Convert value (0-3) to bayesian_score (0-1)
+    const value = data.value || 0;
+    const bayesianScore = value === 0 ? 0 : value / 3;
+
+    assessments[indicatorId] = {
+      bayesian_score: bayesianScore,
+      raw_data: {
+        client_conversation: {
+          responses: data.notes ? { note: data.notes } : {}
+        }
+      },
+      last_updated: data.last_updated
+    };
+
+    // Aggregate by category
+    if (!categoryStats[category]) {
+      categoryStats[category] = {
+        total: 0,
+        assessed: 0,
+        totalRisk: 0
+      };
+    }
+    categoryStats[category].total++;
+    if (value > 0) {
+      categoryStats[category].assessed++;
+      categoryStats[category].totalRisk += bayesianScore;
+    }
+  }
+
+  // Calculate aggregates
+  const byCategory = {};
+  let totalAssessed = 0;
+  let totalIndicators = Object.keys(assessmentData).length;
+
+  for (const [cat, stats] of Object.entries(categoryStats)) {
+    const avgRisk = stats.assessed > 0 ? stats.totalRisk / stats.assessed : 0;
+    const completion = stats.total > 0 ? (stats.assessed / stats.total) * 100 : 0;
+
+    byCategory[cat] = {
+      risk: avgRisk,
+      completion: completion,
+      assessed: stats.assessed,
+      total: stats.total
+    };
+
+    totalAssessed += stats.assessed;
+  }
+
+  const completionPercentage = totalIndicators > 0 ? (totalAssessed / totalIndicators) * 100 : 0;
+
+  return {
+    id: dbAssessment.organization_id,
+    name: dbAssessment.organization_name,
+    organization_type: dbAssessment.organization_type,
+    status: dbAssessment.organization_status,
+    assessments,
+    aggregates: {
+      by_category: byCategory,
+      completion: {
+        percentage: completionPercentage,
+        assessed_indicators: totalAssessed
+      }
+    },
+    metadata: dbAssessment.metadata || {},
+    created_at: dbAssessment.created_at,
+    updated_at: dbAssessment.updated_at
+  };
+}
 
 /**
  * @route   GET /api/auditing/organizations/:organizationId
@@ -17,15 +102,34 @@ export async function getOrganizationAssessment(req, res) {
     const assessment = await auditingService.getAssessmentByOrganization(parseInt(organizationId));
 
     if (!assessment) {
-      return res.status(404).json({
-        success: false,
-        message: 'Assessment not found for this organization'
+      // If no assessment exists, return organization basic data with empty assessments
+      const org = await organizationService.getOrganizationById(parseInt(organizationId));
+
+      return res.json({
+        success: true,
+        data: {
+          id: org.id,
+          name: org.name,
+          organization_type: org.organization_type,
+          status: org.status,
+          assessments: {},
+          aggregates: {
+            by_category: {},
+            completion: { percentage: 0, assessed_indicators: 0 }
+          },
+          metadata: { language: 'it-IT' },
+          created_at: org.created_at,
+          updated_at: org.updated_at
+        }
       });
     }
 
+    // Transform assessment data to frontend format
+    const transformedData = transformAssessmentData(assessment);
+
     res.json({
       success: true,
-      data: assessment
+      data: transformedData
     });
   } catch (error) {
     logger.error('Error getting organization assessment:', error);
