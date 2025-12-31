@@ -112,6 +112,38 @@ async function setupDatabase() {
     log('✓ Privileges granted', colors.green);
 
     await adminClient.end();
+
+    // Connect to the target database to grant table-level permissions
+    const dbClient = new pg.Client(
+      process.env.DATABASE_URL || {
+        host: DB_HOST,
+        port: DB_PORT,
+        database: DB_NAME,
+        user: process.env.POSTGRES_USER || 'postgres',
+        password: process.env.POSTGRES_PASSWORD || DB_PASSWORD
+      }
+    );
+
+    try {
+      await dbClient.connect();
+
+      // Grant privileges on all existing tables
+      log('\n📝 Granting table privileges...', colors.yellow);
+      await dbClient.query(`GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO ${DB_USER}`);
+      await dbClient.query(`GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO ${DB_USER}`);
+
+      // Grant default privileges for future tables
+      await dbClient.query(`ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL PRIVILEGES ON TABLES TO ${DB_USER}`);
+      await dbClient.query(`ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL PRIVILEGES ON SEQUENCES TO ${DB_USER}`);
+
+      log('✓ Table privileges granted', colors.green);
+
+      await dbClient.end();
+    } catch (error) {
+      log(`\n⚠️  Warning: Could not grant table privileges: ${error.message}`, colors.yellow);
+      log('You may need to grant table permissions manually', colors.yellow);
+      await dbClient.end();
+    }
   } catch (error) {
     log(`\n✗ Error setting up database: ${error.message}`, colors.red);
     await adminClient.end();
