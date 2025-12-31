@@ -1437,6 +1437,9 @@ async function openIntegratedClient(indicatorId, orgId, existingAssessment = nul
                     <strong>⚠️ Failed to load indicator</strong>
                     <p style="margin-top: 10px;">${error.message}</p>
                     <p style="margin-top: 10px; font-size: 14px;">The indicator definition might not exist yet in the repository.</p>
+                    <button onclick="closeIndicatorModal()" style="margin-top: 20px; padding: 10px 20px; background: var(--primary); color: white; border: none; border-radius: 4px; cursor: pointer;">
+                        Close
+                    </button>
                 </div>
             </div>
         `;
@@ -1503,6 +1506,9 @@ async function openIntegratedVersion() {
                 <div style="background: #fee2e2; padding: 20px; border-radius: 8px; border: 1px solid var(--danger);">
                     <strong>⚠️ Failed to load indicator</strong>
                     <p style="margin-top: 10px;">${error.message}</p>
+                    <button onclick="closeIndicatorModal()" style="margin-top: 20px; padding: 10px 20px; background: var(--primary); color: white; border: none; border-radius: 4px; cursor: pointer;">
+                        Close
+                    </button>
                 </div>
             </div>
         `;
