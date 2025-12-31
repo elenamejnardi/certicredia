@@ -51,13 +51,28 @@ async function setupDatabase() {
   log('=' .repeat(50), colors.blue);
 
   // Connect to postgres database (default) to create our database
-  const adminClient = new pg.Client({
-    host: DB_HOST,
-    port: DB_PORT,
-    database: 'postgres',
-    user: process.env.POSTGRES_USER || 'postgres',
-    password: process.env.POSTGRES_PASSWORD || DB_PASSWORD
-  });
+  // Parse DATABASE_URL if available, otherwise use individual env vars
+  let adminConfig;
+  if (process.env.DATABASE_URL) {
+    const url = new URL(process.env.DATABASE_URL);
+    adminConfig = {
+      host: url.hostname,
+      port: parseInt(url.port) || 5432,
+      database: 'postgres',
+      user: url.username,
+      password: url.password
+    };
+  } else {
+    adminConfig = {
+      host: DB_HOST,
+      port: DB_PORT,
+      database: 'postgres',
+      user: process.env.POSTGRES_USER || 'postgres',
+      password: process.env.POSTGRES_PASSWORD || DB_PASSWORD
+    };
+  }
+
+  const adminClient = new pg.Client(adminConfig);
 
   try {
     await adminClient.connect();
@@ -108,13 +123,15 @@ async function setupDatabase() {
  * Create CPF auditing tables
  */
 async function createTables() {
-  const client = new pg.Client({
-    host: DB_HOST,
-    port: DB_PORT,
-    database: DB_NAME,
-    user: DB_USER,
-    password: DB_PASSWORD
-  });
+  const client = new pg.Client(
+    process.env.DATABASE_URL || {
+      host: DB_HOST,
+      port: DB_PORT,
+      database: DB_NAME,
+      user: DB_USER,
+      password: DB_PASSWORD
+    }
+  );
 
   try {
     await client.connect();
