@@ -10,7 +10,7 @@ import { showAlert, closeModal } from '../shared/utils.js';
 // --- Load Data ---
 export async function loadAllData() {
     try {
-        const response = await fetch('/api/organizations', {
+        const response = await fetch('/api/auditing/organizations', {
             cache: 'no-cache',
             headers: {
                 'Cache-Control': 'no-cache, no-store, must-revalidate',
