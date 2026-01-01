@@ -257,25 +257,101 @@
   <script>
     // API_BASE is defined in dashboard-common.js
     let currentOrg = null;
+    let cpfAssessmentData = null;
 
-    // Generate 10x10 Assessment Matrix with random colors
-    function generateAssessmentMatrix() {
+    // Render 10x10 CPF Assessment Matrix with real data
+    function renderAssessmentMatrix(assessmentData) {
       const matrix = document.getElementById('assessmentMatrix');
-      const colors = ['bg-green-500', 'bg-blue-500', 'bg-red-500', 'bg-slate-600'];
+      matrix.innerHTML = ''; // Clear existing content
 
-      for (let row = 0; row < 10; row++) {
+      const assessments = assessmentData?.assessments || {};
+
+      for (let cat = 1; cat <= 10; cat++) {
         const rowDiv = document.createElement('div');
         rowDiv.className = 'flex gap-2';
 
-        for (let col = 0; col < 10; col++) {
+        for (let ind = 1; ind <= 10; ind++) {
+          const indicatorId = `${cat}.${ind}`;
+          const assessment = assessments[indicatorId];
+
+          // Determina se l'indicatore è stato valutato
+          const hasResponses = assessment?.raw_data?.client_conversation?.responses &&
+                               Object.keys(assessment.raw_data.client_conversation.responses).length > 0;
+          const hasScore = assessment && typeof assessment.bayesian_score === 'number';
+          const completed = hasScore && (hasResponses || assessment.bayesian_score > 0);
+
+          // Determina il colore basato sul bayesian_score
+          let colorClass = 'bg-slate-300'; // Non valutato (grigio)
+          let riskLevel = 'Non valutato';
+
+          if (completed) {
+            const score = assessment.bayesian_score;
+            if (score <= 0.33) {
+              colorClass = 'bg-green-500'; // Rischio basso
+              riskLevel = 'Rischio Basso';
+            } else if (score <= 0.66) {
+              colorClass = 'bg-yellow-500'; // Rischio medio
+              riskLevel = 'Rischio Medio';
+            } else {
+              colorClass = 'bg-red-500'; // Rischio alto
+              riskLevel = 'Rischio Alto';
+            }
+          }
+
           const cell = document.createElement('div');
-          const randomColor = colors[Math.floor(Math.random() * colors.length)];
-          cell.className = `matrix-cell ${randomColor}`;
-          cell.title = `Area ${row + 1}-${col + 1}`;
+          cell.className = `matrix-cell ${colorClass}`;
+          const riskPercent = completed ? (assessment.bayesian_score * 100).toFixed(0) : '-';
+          cell.title = `Indicatore ${indicatorId} - ${riskLevel} (${riskPercent}%)`;
+
+          // Mostra ID indicatore nella cella
+          cell.innerHTML = `<div style="font-size: 10px; font-weight: 600; color: white; text-shadow: 0 1px 2px rgba(0,0,0,0.5);">${indicatorId}</div>`;
+
           rowDiv.appendChild(cell);
         }
 
         matrix.appendChild(rowDiv);
+      }
+    }
+
+    // Load CPF Assessment Data
+    async function loadCPFAssessmentData() {
+      if (!currentOrg || !currentOrg.id) {
+        console.warn('⚠️ No organization loaded, cannot load CPF data');
+        return;
+      }
+
+      try {
+        const token = localStorage.getItem('token') || localStorage.getItem('authToken');
+        console.log(`🔍 Loading CPF assessment for organization ${currentOrg.id}...`);
+
+        const response = await fetch(`${API_BASE}/auditing/organizations/${currentOrg.id}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Cache-Control': 'no-cache'
+          }
+        });
+
+        if (!response.ok) {
+          console.warn(`⚠️ CPF assessment not found (${response.status}). Organization may not have assessment data yet.`);
+          // Render empty matrix
+          renderAssessmentMatrix(null);
+          return;
+        }
+
+        const data = await response.json();
+        console.log('📊 CPF Assessment data loaded:', data);
+
+        if (data.success && data.data) {
+          cpfAssessmentData = data.data;
+          renderAssessmentMatrix(cpfAssessmentData);
+        } else {
+          console.warn('⚠️ No CPF assessment data available');
+          renderAssessmentMatrix(null);
+        }
+      } catch (error) {
+        console.error('💥 Error loading CPF assessment:', error);
+        // Render empty matrix on error
+        renderAssessmentMatrix(null);
       }
     }
 
@@ -301,6 +377,8 @@
           console.log('✅ Organization loaded:', currentOrg);
           displayOrganizationData(currentOrg);
           loadAssignedSpecialists();
+          // Load CPF Assessment Matrix
+          loadCPFAssessmentData();
         } else {
           console.error('❌ Errore caricamento organizzazione:', data.message || 'Nessun dato');
           alert('Errore: ' + (data.message || 'Impossibile caricare i dati dell\'organizzazione. Verifica di essere associato a un\'organizzazione.'));
@@ -428,7 +506,7 @@
 
     // Initialize on page load
     document.addEventListener('DOMContentLoaded', () => {
-      generateAssessmentMatrix();
+      // Load organization data (will auto-load CPF assessment matrix)
       loadOrganizationData();
     });
   </script>
