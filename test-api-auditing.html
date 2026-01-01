@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test API Auditing</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        pre { background: #f4f4f4; padding: 15px; border-radius: 5px; overflow-x: auto; }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h1>Test API Auditing - Organization Demo</h1>
+    <button onclick="testAPI()">Test API</button>
+    <div id="result"></div>
+
+    <script>
+        async function testAPI() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '<p>Loading...</p>';
+
+            try {
+                // Login first
+                const loginResponse = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: 'organization@certicredia.test',
+                        password: 'Org123!@#'
+                    })
+                });
+
+                const loginData = await loginResponse.json();
+                console.log('Login:', loginData);
+
+                if (!loginData.success) {
+                    resultDiv.innerHTML = `<p class="error">Login failed: ${loginData.message}</p>`;
+                    return;
+                }
+
+                // Get auditing data
+                const auditingResponse = await fetch('/api/auditing/organizations/1');
+                const auditingData = await auditingResponse.json();
+
+                console.log('Auditing Data:', auditingData);
+
+                if (!auditingData.success) {
+                    resultDiv.innerHTML = `<p class="error">API Error: ${auditingData.message}</p>`;
+                    return;
+                }
+
+                // Display results
+                const data = auditingData.data;
+                const html = `
+                    <h2 class="success">✅ API Response OK</h2>
+
+                    <h3>Organization Info:</h3>
+                    <pre>${JSON.stringify({
+                        id: data.id,
+                        name: data.name,
+                        organization_type: data.organization_type
+                    }, null, 2)}</pre>
+
+                    <h3>Completion:</h3>
+                    <pre>${JSON.stringify(data.aggregates.completion, null, 2)}</pre>
+
+                    <h3>Maturity Model:</h3>
+                    <pre>${JSON.stringify(data.aggregates.maturity_model, null, 2)}</pre>
+
+                    <h3>Category Stats (by_category):</h3>
+                    <pre>${JSON.stringify(data.aggregates.by_category, null, 2)}</pre>
+                `;
+
+                resultDiv.innerHTML = html;
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="error">Error: ${error.message}</p>
+                    <pre>${error.stack}</pre>`;
+            }
+        }
+    </script>
+</body>
+</html>
