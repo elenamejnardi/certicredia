@@ -56,11 +56,22 @@ fi
 echo "✅ Migrazioni completate!"
 echo ""
 
-echo "3. Creazione dati demo..."
+echo "3. Creazione dati demo (users, organizations, specialists)..."
 node scripts/seedEnhancedDemoData.js
 
 if [ $? -ne 0 ]; then
     echo "❌ Errore durante il seed dei dati demo!"
+    exit 1
+fi
+
+echo "✅ Dati demo creati!"
+echo ""
+
+echo "4. Generazione dati CPF Auditing per tutte le organizzazioni..."
+node scripts/seed-perfect-cpf-data.js
+
+if [ $? -ne 0 ]; then
+    echo "❌ Errore durante la generazione dei dati CPF Auditing!"
     exit 1
 fi
 
