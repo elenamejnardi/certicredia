@@ -80,9 +80,9 @@ fi
 echo "✅ Database pulito!"
 echo ""
 
-echo "2. Esecuzione migrazioni (ricrea tabelle)..."
+echo "2. Creazione tabelle da schema SQL..."
 cd "$PROJECT_ROOT"
-node core/database/migrations/migrate.js up
+psql "$DB_CONNECTION" < core/database/schema/complete_schema.sql
 
 if [ $? -ne 0 ]; then
     echo "❌ Errore durante le migrazioni!"
