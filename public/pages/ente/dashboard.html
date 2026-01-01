@@ -294,7 +294,7 @@
           cell.addEventListener('click', () => {
             if (currentOrg && currentOrg.id) {
               // Apri dashboard auditing completa con parametro indicatore
-              const dashboardUrl = `/dashboard/auditing/index.html#organization/${currentOrg.id}&indicator=${indicatorId}&mode=edit`;
+              const dashboardUrl = `/dashboard/auditing/index.html?from=organization#organization/${currentOrg.id}&indicator=${indicatorId}&mode=edit`;
               window.open(dashboardUrl, '_blank');
             }
           });
@@ -405,7 +405,7 @@
       // Set link to full dashboard
       const fullDashboardLink = document.getElementById('fullDashboardLink');
       if (fullDashboardLink && org.id) {
-        fullDashboardLink.href = `/dashboard/auditing/index.html#organization/${org.id}`;
+        fullDashboardLink.href = `/dashboard/auditing/index.html?from=organization#organization/${org.id}`;
       }
     }
 

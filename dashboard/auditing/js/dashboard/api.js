@@ -1,7 +1,7 @@
-import { 
-    organizations, setOrganizations, 
-    setSelectedOrgData, setCategoryDescriptions, 
-    selectedOrgId 
+import {
+    organizations, setOrganizations,
+    setSelectedOrgId, setSelectedOrgData, setCategoryDescriptions,
+    selectedOrgId
 } from './state.js';
 import { renderOrganizations } from './render-list.js';
 import { renderAssessmentDetails } from './render-details.js';
@@ -10,6 +10,7 @@ import { showAlert, closeModal } from '../shared/utils.js';
 // --- Load Data ---
 export async function loadAllData() {
     try {
+        console.log('🔄 Loading organizations from /api/auditing/organizations');
         const response = await fetch('/api/auditing/organizations', {
             cache: 'no-cache',
             headers: {
@@ -18,14 +19,38 @@ export async function loadAllData() {
                 'Expires': '0'
             }
         });
+
+        console.log('📡 Response status:', response.status);
+
+        if (!response.ok) {
+            console.error('❌ HTTP error! status:', response.status);
+            if (response.status === 401 || response.status === 403) {
+                showAlert('Authentication required. Please log in.', 'error');
+                // Redirect to login if needed
+                // window.location.href = '/login';
+                return;
+            }
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
         const data = await response.json();
+        console.log('📦 Data received:', data);
+        console.log('📊 Organizations count:', data.organizations?.length || 0);
+
+        if (data.organizations && data.organizations.length > 0) {
+            console.log('✅ First organization:', data.organizations[0]);
+        } else {
+            console.warn('⚠️ No organizations in response!');
+        }
 
         setOrganizations(data.organizations || []);
-        
+        console.log('💾 Organizations saved to state');
+
         // Load auxiliary data
         await loadCategoryDescriptions();
         await loadTrashCount();
 
+        console.log('🎨 Rendering organizations...');
         renderOrganizations();
 
         // Reload selected org if present
@@ -33,13 +58,14 @@ export async function loadAllData() {
             await loadOrganizationDetails(selectedOrgId);
         }
     } catch (error) {
-        console.error('Error loading organizations:', error);
+        console.error('❌ Error loading organizations:', error);
         showAlert('Failed to load organizations: ' + error.message, 'error');
     }
 }
 
 export async function loadOrganizationDetails(orgId) {
     try {
+        console.log(`🔄 Loading organization details for ID: ${orgId}`);
         const response = await fetch(`/api/auditing/organizations/${orgId}`, {
             cache: 'no-cache',
             headers: {
@@ -48,16 +74,23 @@ export async function loadOrganizationDetails(orgId) {
                 'Expires': '0'
             }
         });
+
+        console.log('📡 Response status:', response.status);
         const result = await response.json();
+        console.log('📦 Organization data received:', result);
 
         if (result.success) {
+            console.log('✅ Setting organization data:', result.data.name);
+            setSelectedOrgId(orgId);
             setSelectedOrgData(result.data);
             renderAssessmentDetails();
+            console.log('✅ Organization details rendered successfully');
         } else {
+            console.error('❌ Failed to load organization:', result);
             showAlert('Failed to load organization details', 'error');
         }
     } catch (error) {
-        console.error('Error loading organization details:', error);
+        console.error('❌ Error loading organization details:', error);
         showAlert('Failed to load organization details: ' + error.message, 'error');
     }
 }
@@ -78,13 +111,14 @@ async function loadCategoryDescriptions() {
 // --- Trash Count ---
 export async function loadTrashCount() {
     try {
-        const response = await fetch('/api/trash', { cache: 'no-cache' });
+        const response = await fetch('/api/auditing/trash', { cache: 'no-cache' });
         const data = await response.json();
         if (data.success) {
+            const count = data.data ? data.data.length : 0;
             const badge = document.getElementById('trashCount');
             if (badge) {
-                if (data.count > 0) {
-                    badge.textContent = data.count;
+                if (count > 0) {
+                    badge.textContent = count;
                     badge.style.display = 'inline-block';
                 } else {
                     badge.style.display = 'none';

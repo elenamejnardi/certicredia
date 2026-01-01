@@ -176,6 +176,84 @@ function transformAssessmentData(dbAssessment) {
 }
 
 /**
+ * @route   GET /api/auditing/organizations
+ * @desc    Get all organizations with their assessments
+ * @access  Private
+ */
+export async function getAllOrganizationsWithAssessments(req, res) {
+  try {
+    // Get all organizations
+    const result = await organizationService.getAllOrganizations({ limit: 1000 });
+
+    // For each organization, get its assessment and transform data
+    const organizationsWithAssessments = await Promise.all(
+      result.organizations.map(async (org) => {
+        const assessment = await auditingService.getAssessmentByOrganization(org.id);
+
+        if (assessment) {
+          const transformedData = transformAssessmentData(assessment);
+
+          // Add organization fields and stats object for frontend compatibility
+          return {
+            ...transformedData,
+            industry: org.industry || org.metadata?.industry || 'Other',
+            size: org.size || org.metadata?.size || 'medium',
+            country: org.country || 'Italia',
+            language: transformedData.metadata?.language || 'it-IT',
+            stats: {
+              completion_percentage: transformedData.aggregates?.completion?.percentage || 0,
+              overall_risk: transformedData.aggregates?.maturity_model?.convergence_index
+                ? transformedData.aggregates.maturity_model.convergence_index / 10
+                : 0,
+              total_assessments: transformedData.aggregates?.completion?.assessed_indicators || 0,
+              avg_confidence: 0.85 // Default confidence value
+            }
+          };
+        } else {
+          // Return organization with empty assessment
+          return {
+            id: org.id,
+            name: org.name,
+            organization_type: org.organization_type,
+            status: org.status,
+            industry: org.industry || org.metadata?.industry || 'Other',
+            size: org.size || org.metadata?.size || 'medium',
+            country: org.country || 'Italia',
+            language: 'it-IT',
+            assessments: {},
+            aggregates: {
+              by_category: {},
+              completion: { percentage: 0, assessed_indicators: 0 }
+            },
+            stats: {
+              completion_percentage: 0,
+              overall_risk: 0,
+              total_assessments: 0,
+              avg_confidence: 0
+            },
+            metadata: { language: 'it-IT' },
+            created_at: org.created_at,
+            updated_at: org.updated_at
+          };
+        }
+      })
+    );
+
+    res.json({
+      success: true,
+      organizations: organizationsWithAssessments
+    });
+  } catch (error) {
+    logger.error('Error getting all organizations with assessments:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to retrieve organizations',
+      error: error.message
+    });
+  }
+}
+
+/**
  * @route   GET /api/auditing/organizations/:organizationId
  * @desc    Get assessment for a specific organization
  * @access  Private
@@ -185,10 +263,11 @@ export async function getOrganizationAssessment(req, res) {
     const { organizationId } = req.params;
     const assessment = await auditingService.getAssessmentByOrganization(parseInt(organizationId));
 
+    // Always get organization data for additional fields
+    const org = await organizationService.getOrganizationById(parseInt(organizationId));
+
     if (!assessment) {
       // If no assessment exists, return organization basic data with empty assessments
-      const org = await organizationService.getOrganizationById(parseInt(organizationId));
-
       return res.json({
         success: true,
         data: {
@@ -196,10 +275,20 @@ export async function getOrganizationAssessment(req, res) {
           name: org.name,
           organization_type: org.organization_type,
           status: org.status,
+          industry: org.industry || org.metadata?.industry || 'Other',
+          size: org.size || org.metadata?.size || 'medium',
+          country: org.country || 'Italia',
+          language: 'it-IT',
           assessments: {},
           aggregates: {
             by_category: {},
             completion: { percentage: 0, assessed_indicators: 0 }
+          },
+          stats: {
+            completion_percentage: 0,
+            overall_risk: 0,
+            total_assessments: 0,
+            avg_confidence: 0
           },
           metadata: { language: 'it-IT' },
           created_at: org.created_at,
@@ -211,9 +300,26 @@ export async function getOrganizationAssessment(req, res) {
     // Transform assessment data to frontend format
     const transformedData = transformAssessmentData(assessment);
 
+    // Add organization fields and stats for frontend compatibility
+    const enrichedData = {
+      ...transformedData,
+      industry: org.industry || org.metadata?.industry || 'Other',
+      size: org.size || org.metadata?.size || 'medium',
+      country: org.country || 'Italia',
+      language: transformedData.metadata?.language || 'it-IT',
+      stats: {
+        completion_percentage: transformedData.aggregates?.completion?.percentage || 0,
+        overall_risk: transformedData.aggregates?.maturity_model?.convergence_index
+          ? transformedData.aggregates.maturity_model.convergence_index / 10
+          : 0,
+        total_assessments: transformedData.aggregates?.completion?.assessed_indicators || 0,
+        avg_confidence: 0.85
+      }
+    };
+
     res.json({
       success: true,
-      data: transformedData
+      data: enrichedData
     });
   } catch (error) {
     logger.error('Error getting organization assessment:', error);
@@ -489,6 +595,7 @@ export async function getStatistics(req, res) {
 }
 
 export default {
+  getAllOrganizationsWithAssessments,
   getOrganizationAssessment,
   getAllAssessments,
   createOrganizationAssessment,
