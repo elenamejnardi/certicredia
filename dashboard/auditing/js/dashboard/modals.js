@@ -27,7 +27,7 @@ export async function openIntegratedClient(indicatorId, orgId) {
     const lang = selectedOrgData.metadata?.language || 'en-US';
     const [catNum] = indicatorId.split('.');
     const catName = CATEGORY_MAP[catNum];
-    const url = `/dashboard/auditor-field-kit/interactive/${lang}/${catNum}.x-${catName}/indicator_${indicatorId}.json`;
+    const url = `/auditor-field-kit/interactive/${lang}/${catNum}.x-${catName}/indicator_${indicatorId}.json`;
 
     try {
         const response = await fetch(url);
