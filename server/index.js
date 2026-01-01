@@ -65,9 +65,9 @@ const limiter = rateLimit({
 });
 app.use('/api/', limiter);
 
-// Body parser
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// Body parser - Increased limit for auditing assessments with large raw_data
+app.use(express.json({ limit: '5mb' }));
+app.use(express.urlencoded({ extended: true, limit: '5mb' }));
 
 // Serve static files (frontend)
 app.use(express.static(path.join(__dirname, '..')));
