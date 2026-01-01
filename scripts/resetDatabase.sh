@@ -45,7 +45,11 @@ echo "✅ Database pulito!"
 echo ""
 
 echo "2. Esecuzione migrazioni (ricrea tabelle)..."
-cd /home/user/certicredia
+# Get the directory where this script is located
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+# Go to project root (parent of scripts/)
+PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
+cd "$PROJECT_ROOT"
 node server/migrate.js
 
 if [ $? -ne 0 ]; then
