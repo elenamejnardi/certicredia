@@ -9,6 +9,14 @@ export function renderAssessmentDetails() {
     if (!selectedOrgData) return;
     const org = selectedOrgData;
 
+    // Update Header Organization Name
+    const orgNameHeader = document.getElementById('organizationNameHeader');
+    const orgNameText = document.getElementById('orgNameText');
+    if (orgNameHeader && orgNameText) {
+        orgNameText.textContent = org.name;
+        orgNameHeader.style.display = 'inline';
+    }
+
     // Titles
     const pTitle = document.getElementById('progressTitle');
     const rTitle = document.getElementById('riskTitle');

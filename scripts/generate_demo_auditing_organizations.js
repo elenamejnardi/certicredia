@@ -36,12 +36,12 @@ const DEMO_ORGANIZATIONS = [
     name: 'FinanceFirst Bank',
     industry: 'Finance',
     size: 'enterprise',
-    country: 'GB',
+    country: 'US',
     language: 'en-US',
     created_by: 'System',
     notes: 'International banking institution',
-    sede_sociale: '25 Bank Street, London, E14 5JP',
-    partita_iva: 'GB123456789'
+    sede_sociale: '250 Wall Street, New York, NY 10005',
+    partita_iva: 'US98-7654321'
   },
   {
     id: 'healthplus-clinic', // normalized from "HealthPlus Clinic"
@@ -57,27 +57,27 @@ const DEMO_ORGANIZATIONS = [
   },
   {
     id: 'retailmax-store', // normalized from "RetailMax Store"
-    name: 'RetailMax Store',
+    name: 'RetailMax Italia',
     industry: 'Retail',
     size: 'small',
-    country: 'DE',
-    language: 'de-DE',
+    country: 'IT',
+    language: 'it-IT',
     created_by: 'System',
-    notes: 'Retail chain with e-commerce platform',
-    sede_sociale: 'Marktstraße 42, 10117 Berlin',
-    partita_iva: 'DE123456789'
+    notes: 'Catena retail con piattaforma e-commerce',
+    sede_sociale: 'Via del Commercio 42, 20121 Milano (MI)',
+    partita_iva: 'IT66778899001'
   },
   {
     id: 'edulearn-academy', // normalized from "EduLearn Academy"
-    name: 'EduLearn Academy',
+    name: 'EduLearn Academy USA',
     industry: 'Education',
     size: 'medium',
-    country: 'FR',
-    language: 'fr-FR',
+    country: 'US',
+    language: 'en-US',
     created_by: 'System',
-    notes: 'Online education platform',
-    sede_sociale: '8 Rue de l\'Éducation, 75001 Paris',
-    partita_iva: 'FR12345678901'
+    notes: 'Online education platform with nationwide reach',
+    sede_sociale: '1200 Education Boulevard, Boston, MA 02115',
+    partita_iva: 'US55-4433221'
   }
 ];
 

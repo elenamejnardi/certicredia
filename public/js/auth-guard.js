@@ -157,8 +157,8 @@
 
         // Verifica ruolo
         if (!this.hasRole(requiredRoles)) {
-          console.warn('🚫 User does not have required role. Access denied.');
-          this.showAccessDenied();
+          console.warn('🚫 User does not have required role. Redirecting to login...');
+          this.redirectToLogin();
           return;
         }
 

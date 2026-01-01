@@ -1459,6 +1459,6 @@ function getSpecStatusBadge(status) {
  * Opens in a new tab with organization ID in URL hash
  */
 function openAuditingDashboard(organizationId) {
-    const dashboardUrl = `dashboard/auditing/index.html#organization/${organizationId}`;
+    const dashboardUrl = `dashboard/auditing/index.html?from=admin#organization/${organizationId}`;
     window.open(dashboardUrl, '_blank');
 }
