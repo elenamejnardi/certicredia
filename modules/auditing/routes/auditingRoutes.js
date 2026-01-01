@@ -1,6 +1,7 @@
 import express from 'express';
 import { authenticate } from '../../../server/middleware/auth.js';
 import {
+  getAllOrganizationsWithAssessments,
   getOrganizationAssessment,
   getAllAssessments,
   createOrganizationAssessment,
@@ -39,6 +40,13 @@ router.get('/trash', authenticate, getTrash);
  * @access  Private
  */
 router.get('/assessments', authenticate, getAllAssessments);
+
+/**
+ * @route   GET /api/auditing/organizations
+ * @desc    Get all organizations with their assessments
+ * @access  Private
+ */
+router.get('/organizations', authenticate, getAllOrganizationsWithAssessments);
 
 /**
  * @route   GET /api/auditing/organizations/:organizationId

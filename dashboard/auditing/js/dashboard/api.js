@@ -78,13 +78,14 @@ async function loadCategoryDescriptions() {
 // --- Trash Count ---
 export async function loadTrashCount() {
     try {
-        const response = await fetch('/api/trash', { cache: 'no-cache' });
+        const response = await fetch('/api/auditing/trash', { cache: 'no-cache' });
         const data = await response.json();
         if (data.success) {
+            const count = data.data ? data.data.length : 0;
             const badge = document.getElementById('trashCount');
             if (badge) {
-                if (data.count > 0) {
-                    badge.textContent = data.count;
+                if (count > 0) {
+                    badge.textContent = count;
                     badge.style.display = 'inline-block';
                 } else {
                     badge.style.display = 'none';

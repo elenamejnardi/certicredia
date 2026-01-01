@@ -176,6 +176,57 @@ function transformAssessmentData(dbAssessment) {
 }
 
 /**
+ * @route   GET /api/auditing/organizations
+ * @desc    Get all organizations with their assessments
+ * @access  Private
+ */
+export async function getAllOrganizationsWithAssessments(req, res) {
+  try {
+    // Get all organizations
+    const organizations = await organizationService.getAllOrganizations({ limit: 1000 });
+
+    // For each organization, get its assessment and transform data
+    const organizationsWithAssessments = await Promise.all(
+      organizations.data.map(async (org) => {
+        const assessment = await auditingService.getAssessmentByOrganization(org.id);
+
+        if (assessment) {
+          return transformAssessmentData(assessment);
+        } else {
+          // Return organization with empty assessment
+          return {
+            id: org.id,
+            name: org.name,
+            organization_type: org.organization_type,
+            status: org.status,
+            assessments: {},
+            aggregates: {
+              by_category: {},
+              completion: { percentage: 0, assessed_indicators: 0 }
+            },
+            metadata: { language: 'it-IT' },
+            created_at: org.created_at,
+            updated_at: org.updated_at
+          };
+        }
+      })
+    );
+
+    res.json({
+      success: true,
+      organizations: organizationsWithAssessments
+    });
+  } catch (error) {
+    logger.error('Error getting all organizations with assessments:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to retrieve organizations',
+      error: error.message
+    });
+  }
+}
+
+/**
  * @route   GET /api/auditing/organizations/:organizationId
  * @desc    Get assessment for a specific organization
  * @access  Private
@@ -489,6 +540,7 @@ export async function getStatistics(req, res) {
 }
 
 export default {
+  getAllOrganizationsWithAssessments,
   getOrganizationAssessment,
   getAllAssessments,
   createOrganizationAssessment,
