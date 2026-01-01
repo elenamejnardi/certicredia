@@ -82,7 +82,7 @@ echo ""
 
 echo "2. Esecuzione migrazioni (ricrea tabelle)..."
 cd "$PROJECT_ROOT"
-node server/migrate.js
+node core/database/migrations/migrate.js up
 
 if [ $? -ne 0 ]; then
     echo "❌ Errore durante le migrazioni!"
