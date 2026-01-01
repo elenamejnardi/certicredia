@@ -77,7 +77,8 @@ function transformToDBFormat(assessments) {
       value: value,
       notes: assessment.raw_data?.client_conversation?.notes ||
              `Assessment for ${indicatorId} - Score: ${bayesianScore.toFixed(2)}`,
-      last_updated: new Date().toISOString()
+      last_updated: new Date().toISOString(),
+      raw_data: assessment.raw_data  // Include full raw_data for form editing
     };
   }
 
