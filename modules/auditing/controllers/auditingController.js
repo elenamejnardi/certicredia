@@ -31,13 +31,16 @@ function transformAssessmentData(dbAssessment) {
     const value = data.value || 0;
     const bayesianScore = value === 0 ? 0 : value / 3;
 
+    // Use raw_data from DB if available, otherwise create minimal structure
+    const rawData = data.raw_data || {
+      client_conversation: {
+        responses: data.notes ? { note: data.notes } : {}
+      }
+    };
+
     assessments[indicatorId] = {
       bayesian_score: bayesianScore,
-      raw_data: {
-        client_conversation: {
-          responses: data.notes ? { note: data.notes } : {}
-        }
-      },
+      raw_data: rawData,
       last_updated: data.last_updated
     };
 
