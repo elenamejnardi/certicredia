@@ -266,7 +266,7 @@
     // Load specialist data
     async function loadSpecialistData() {
       try {
-        const token = localStorage.getItem('token') || localStorage.getItem('authToken');
+        const token = localStorage.getItem('authToken');
         console.log('🔍 Loading specialist data...');
         console.log('🔑 Token:', token ? 'presente' : 'ASSENTE!');
 

@@ -33,7 +33,7 @@
      * Controlla se l'utente è autenticato
      */
     isAuthenticated() {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('authToken');
       return !!token;
     },
 

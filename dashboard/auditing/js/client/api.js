@@ -133,9 +133,16 @@ export async function saveToAPI() {
     // Update with current indicator
     existingAssessmentData[indicatorKey] = indicatorData;
 
+    // Get auth token for authenticated request
+    const token = localStorage.getItem('authToken');
+    const headers = { 'Content-Type': 'application/json' };
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+    }
+
     const response = await fetch(`/api/auditing/organizations/${organizationContext.orgId}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: headers,
         body: JSON.stringify({
             assessmentData: existingAssessmentData
         })
@@ -212,9 +219,13 @@ export async function resetAll() {
             raw_data: { client_conversation: { responses: {}, notes: '', red_flags: [] } }
          };
          try {
+             const token = localStorage.getItem('authToken');
+             const headers = { 'Content-Type': 'application/json' };
+             if (token) headers['Authorization'] = `Bearer ${token}`;
+
              await fetch(`/api/organizations/${organizationContext.orgId}/assessments`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: headers,
                 body: JSON.stringify(emptyAssessment)
             });
          } catch(e) { console.error("Error saving reset state", e); }
@@ -482,9 +493,13 @@ export async function resetIntegratedClientData() {
 
         try {
             console.log('💾 Saving empty assessment to API for history tracking...');
+            const token = localStorage.getItem('authToken');
+            const headers = { 'Content-Type': 'application/json' };
+            if (token) headers['Authorization'] = `Bearer ${token}`;
+
             const response = await fetch(`/api/organizations/${organizationContext.orgId}/assessments`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: headers,
                 body: JSON.stringify(emptyAssessment)
             });
 

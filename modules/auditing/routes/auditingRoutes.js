@@ -1,5 +1,6 @@
 import express from 'express';
 import { authenticate } from '../../../server/middleware/auth.js';
+import { requireActiveSubscription } from '../../../server/middleware/checkSubscription.js';
 import {
   getAllOrganizationsWithAssessments,
   getOrganizationAssessment,
@@ -51,23 +52,23 @@ router.get('/organizations', authenticate, getAllOrganizationsWithAssessments);
 /**
  * @route   GET /api/auditing/organizations/:organizationId
  * @desc    Get assessment for specific organization
- * @access  Private
+ * @access  Private (requires active subscription)
  */
-router.get('/organizations/:organizationId', authenticate, getOrganizationAssessment);
+router.get('/organizations/:organizationId', authenticate, requireActiveSubscription, getOrganizationAssessment);
 
 /**
  * @route   POST /api/auditing/organizations/:organizationId
  * @desc    Create assessment for organization
- * @access  Private
+ * @access  Private (requires active subscription)
  */
-router.post('/organizations/:organizationId', authenticate, createOrganizationAssessment);
+router.post('/organizations/:organizationId', authenticate, requireActiveSubscription, createOrganizationAssessment);
 
 /**
  * @route   PUT /api/auditing/organizations/:organizationId
  * @desc    Update assessment for organization
- * @access  Private
+ * @access  Private (requires active subscription)
  */
-router.put('/organizations/:organizationId', authenticate, updateOrganizationAssessment);
+router.put('/organizations/:organizationId', authenticate, requireActiveSubscription, updateOrganizationAssessment);
 
 /**
  * @route   DELETE /api/auditing/organizations/:organizationId

@@ -276,8 +276,8 @@
                 const data = await response.json();
 
                 if (data.success) {
-                    // Save token
-                    localStorage.setItem('token', data.data.accessToken);
+                    // Save token (standardized to 'authToken')
+                    localStorage.setItem('authToken', data.data.accessToken);
                     localStorage.setItem('user', JSON.stringify(data.data.user));
 
                     // Redirect based on role

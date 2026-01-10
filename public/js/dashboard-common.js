@@ -9,12 +9,8 @@ const API_BASE = window.location.origin + '/api';
  * Get auth token from localStorage
  */
 function getAuthToken() {
-  // Try both 'token' and 'authToken' keys for compatibility
-  let token = localStorage.getItem('token');
-  if (!token) {
-    token = localStorage.getItem('authToken');
-  }
-  return token;
+  // Standardized to use 'authToken' key
+  return localStorage.getItem('authToken');
 }
 
 /**
@@ -34,7 +30,7 @@ function getCurrentUser() {
  */
 function logout() {
   // Clear localStorage
-  localStorage.removeItem('token');
+  localStorage.removeItem('authToken');
   localStorage.removeItem('refreshToken');
   localStorage.removeItem('user');
 

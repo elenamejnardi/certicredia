@@ -251,7 +251,7 @@
     // Load user profile
     async function loadProfile() {
       try {
-        const token = localStorage.getItem('authToken') || localStorage.getItem('token');
+        const token = localStorage.getItem('authToken');
         console.log('🔍 Loading user profile...');
         console.log('🔑 Token:', token ? 'presente' : 'assente');
 
@@ -407,7 +407,7 @@
           country: document.getElementById('country').value
         };
 
-        const token = localStorage.getItem('authToken') || localStorage.getItem('token');
+        const token = localStorage.getItem('authToken');
         const response = await fetch(`${API_BASE}/auth/profile`, {
           method: 'PUT',
           headers: {
@@ -465,7 +465,7 @@
       changePasswordBtn.textContent = 'Modifica in corso...';
 
       try {
-        const token = localStorage.getItem('authToken') || localStorage.getItem('token');
+        const token = localStorage.getItem('authToken');
         const response = await fetch(`${API_BASE}/auth/password`, {
           method: 'PUT',
           headers: {

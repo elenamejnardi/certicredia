@@ -2,9 +2,9 @@
 const API = window.location.hostname === 'localhost' ? 'http://localhost:3000/api' : '/api';
 const state = { user: null, cart: [], products: [] };
 
-function getToken() { return localStorage.getItem('token'); }
-function setToken(t) { localStorage.setItem('token', t); }
-function removeToken() { localStorage.removeItem('token'); }
+function getToken() { return localStorage.getItem('authToken'); }
+function setToken(t) { localStorage.setItem('authToken', t); }
+function removeToken() { localStorage.removeItem('authToken'); }
 
 async function api(endpoint, opts = {}) {
     const token = getToken();
