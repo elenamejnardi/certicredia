@@ -21,7 +21,7 @@ async function init() {
 // Load user and organization
 async function loadUser() {
   try {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('authToken');
     if (!token) {
       window.location.href = '/public/pages/app-landing.html';
       return;
@@ -39,7 +39,7 @@ async function loadUser() {
     document.getElementById('orgName').textContent = state.user.company || state.user.name;
   } catch (error) {
     console.error('Error loading user:', error);
-    localStorage.removeItem('token');
+    localStorage.removeItem('authToken');
     window.location.href = '/public/pages/app-landing.html';
   }
 }
@@ -47,7 +47,7 @@ async function loadUser() {
 // Load or create assessment
 async function loadAssessment() {
   try {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('authToken');
 
     // Try to get existing assessment
     const res = await fetch(`${API_BASE}/assessments`, {
@@ -184,7 +184,7 @@ function updateProgress() {
 // Save draft
 async function saveDraft() {
   try {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('authToken');
 
     const res = await fetch(`${API_BASE}/assessments/${state.assessment.id}`, {
       method: 'PATCH',
@@ -212,7 +212,7 @@ async function submitForReview() {
   if (!confirm('Sei sicuro di voler inviare l\'assessment per la revisione? Non potrai più modificarlo.')) return;
 
   try {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('authToken');
 
     await saveDraft(); // Save first
 
@@ -239,7 +239,7 @@ async function submitForReview() {
 // Generate specialist token
 async function generateToken() {
   try {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('authToken');
 
     const res = await fetch(`${API_BASE}/assessments/${state.assessment.id}/assign-token`, {
       method: 'POST',
@@ -286,7 +286,7 @@ function setupEventListeners() {
   });
 
   document.getElementById('logoutBtn').addEventListener('click', () => {
-    localStorage.removeItem('token');
+    localStorage.removeItem('authToken');
     window.location.href = '/public/pages/app-landing.html';
   });
 }
@@ -296,7 +296,7 @@ async function handleFileUpload(e) {
   const files = Array.from(e.target.files);
   if (files.length === 0) return;
 
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('authToken');
 
   for (const file of files) {
     const formData = new FormData();

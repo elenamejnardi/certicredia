@@ -4,12 +4,36 @@
   <meta charset="UTF-8">
   <!-- CRITICAL: Auth check BEFORE any rendering -->
   <script src="/public/js/inline-auth-check.js"></script>
+  <!-- i18n System -->
+  <script src="/dashboard/shared/i18n-utils.js"></script>
+  <script src="/public/js/ente-dashboard-i18n.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard Ente - CertiCredia</title>
+  <meta name="description" content="Gestisci le tue valutazioni CPF3 e la postura di sicurezza">
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Inter', sans-serif; }
+    /* Language Switcher Styles */
+    .lang-switcher button {
+      padding: 0.375rem 0.75rem;
+      border-radius: 0.375rem;
+      transition: all 0.2s;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+    .lang-switcher button:not(.active) {
+      background-color: rgba(148, 163, 184, 0.1);
+      color: #94a3b8;
+    }
+    .lang-switcher button:not(.active):hover {
+      background-color: rgba(148, 163, 184, 0.2);
+      color: #cbd5e1;
+    }
+    .lang-switcher button.active {
+      background-color: #06b6d4;
+      color: white;
+    }
     .matrix-cell {
       width: 40px;
       height: 40px;
@@ -29,21 +53,26 @@
       <div class="flex justify-between h-16">
         <div class="flex items-center">
           <span class="text-xl font-bold text-cyan-400">CertiCredia</span>
-          <span class="ml-3 text-slate-300">Dashboard Organizzazione</span>
+          <span class="ml-3 text-slate-300" data-i18n="nav.title">Dashboard Organizzazione</span>
         </div>
         <div class="flex items-center space-x-3">
+          <!-- Language Switcher -->
+          <div class="lang-switcher flex gap-1 bg-slate-700/50 p-1 rounded-lg border border-slate-600">
+            <button data-lang="it">IT</button>
+            <button data-lang="en">EN</button>
+          </div>
           <span id="orgName" class="text-sm text-slate-300"></span>
           <a href="/public/pages/profile.html" class="bg-slate-700 hover:bg-slate-600 text-slate-300 hover:text-white px-3 py-2 rounded-lg transition-colors flex items-center gap-2 border border-slate-600 text-sm">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
             </svg>
-            Profilo
+            <span data-i18n="nav.profile">Profilo</span>
           </a>
           <button id="logoutBtn" class="bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 px-3 py-2 rounded-lg transition-colors flex items-center gap-2 border border-red-500/30 text-sm">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
             </svg>
-            Logout
+            <span data-i18n="nav.logout">Logout</span>
           </button>
         </div>
       </div>
@@ -314,7 +343,7 @@
       }
 
       try {
-        const token = localStorage.getItem('token') || localStorage.getItem('authToken');
+        const token = localStorage.getItem('authToken');
         console.log(`🔍 Loading CPF assessment for organization ${currentOrg.id}...`);
 
         const response = await fetch(`${API_BASE}/auditing/organizations/${currentOrg.id}`, {
@@ -351,7 +380,7 @@
     // Load organization data
     async function loadOrganizationData() {
       try {
-        const token = localStorage.getItem('token') || localStorage.getItem('authToken');
+        const token = localStorage.getItem('authToken');
         console.log('🔍 Loading organization data...');
         console.log('🔑 Token:', token ? 'presente' : 'ASSENTE!');
 
@@ -505,6 +534,14 @@
 
     // Initialize on page load
     document.addEventListener('DOMContentLoaded', () => {
+      // Initialize i18n system
+      if (typeof initLanguage === 'function' && typeof dashboardTranslations !== 'undefined') {
+        initLanguage(dashboardTranslations);
+        console.log('✅ i18n initialized for organization dashboard');
+      } else {
+        console.warn('⚠️ i18n system not available');
+      }
+
       // Load organization data (will auto-load CPF assessment matrix)
       loadOrganizationData();
     });

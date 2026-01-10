@@ -23,7 +23,7 @@
 
   // If this page requires auth
   if (requiredRoles) {
-    const token = localStorage.getItem('token') || localStorage.getItem('authToken');
+    const token = localStorage.getItem('authToken');
 
     // No token = immediate redirect (before rendering)
     if (!token) {

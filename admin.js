@@ -102,7 +102,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 // Authentication
 async function checkAuth() {
     try {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('authToken');
         if (!token) {
             window.location.href = '/public/pages/app-landing.html';
             return;
@@ -157,7 +157,7 @@ async function logout() {
 // Dashboard
 async function loadDashboard() {
     try {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('authToken');
 
         // Load all stats in parallel
         const [productsRes, ordersRes, usersRes, contactsRes] = await Promise.all([
@@ -774,7 +774,7 @@ function resetContactFilters() {
 
 // Utility Functions
 async function apiCall(endpoint, options = {}) {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('authToken');
     if (!token) {
         window.location.href = '/public/pages/app-landing.html';
         return null;
@@ -1157,7 +1157,7 @@ async function deleteOrganization(id) {
     if (!confirm('Sei sicuro di voler eliminare questa organizzazione?')) return;
 
     try {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('authToken');
         const response = await fetch(`${API_BASE}/api/organizations/${id}`, {
             method: 'DELETE',
             headers: {
@@ -1198,7 +1198,7 @@ async function saveOrganization(event) {
     };
 
     try {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('authToken');
         const url = id ? `${API_BASE}/api/organizations/${id}` : `${API_BASE}/api/organizations`;
         const method = id ? 'PUT' : 'POST';
 
@@ -1377,7 +1377,7 @@ async function deleteSpecialist(id) {
     if (!confirm('Sei sicuro di voler eliminare questo specialist?')) return;
 
     try {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('authToken');
         const response = await fetch(`${API_BASE}/api/specialists/${id}`, {
             method: 'DELETE',
             headers: {
@@ -1414,7 +1414,7 @@ async function saveSpecialist(event) {
     };
 
     try {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('authToken');
         const url = id ? `${API_BASE}/api/specialists/${id}` : `${API_BASE}/api/specialists`;
         const method = id ? 'PUT' : 'POST';
 
