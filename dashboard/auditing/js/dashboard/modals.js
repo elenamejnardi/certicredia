@@ -209,6 +209,16 @@ export async function switchModalLanguage(shortLang) {
             }
         });
 
+        // Update all dashboard texts and re-render matrix
+        if (typeof setLanguage === 'function' && typeof auditingTranslations !== 'undefined') {
+            setLanguage(shortLang, auditingTranslations);
+        }
+
+        // Re-render matrix with new language
+        if (selectedOrgData) {
+            renderProgressMatrix(selectedOrgData);
+        }
+
         console.log(`✅ Language switched to ${isoLang}`);
     } catch (error) {
         console.error('Error switching language:', error);
